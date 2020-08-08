@@ -117,7 +117,5 @@ class TelegramChatRepositoryImpl @Inject constructor(
 
     companion object {
         private const val TAG = "TelegramChatRepository"
-        private const val API_ID = 0
-        private const val API_HASH = ""
     }
 }
