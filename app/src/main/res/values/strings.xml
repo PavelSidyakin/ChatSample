@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Chat Sample</string>
+    <string name="enter_phone_number">Enter phone number</string>
+    <string name="enter_code">Enter code</string>
+
+    <string name="button_go">➤</string>
+
+</resources>
