@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 .idea
+/app/src/main/java/com/example/chatsample/data/ApiPrivateData.kt
