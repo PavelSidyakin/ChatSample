@@ -16,6 +16,7 @@ class AuthReducer: Reducer<AuthStore.State, AuthStateChanges> {
             is AuthStateChanges.Error -> copy(error = result.throwable)
             is AuthStateChanges.SendPhoneEnabled -> copy(sendPhoneNumberEnabled = result.enabled)
             is AuthStateChanges.SendCodeEnabled -> copy(sendCodeEnabled = result.enabled)
+            is AuthStateChanges.SetCurrentPhoneNumber -> copy(currentPhoneNumber = result.phoneNumber)
         }
     }
 }

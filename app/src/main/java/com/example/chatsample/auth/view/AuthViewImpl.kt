@@ -2,7 +2,9 @@ package com.example.chatsample.auth.view
 
 import android.view.View
 import androidx.core.widget.doOnTextChanged
+import com.arkivanov.mvikotlin.core.utils.diff
 import com.arkivanov.mvikotlin.core.view.BaseMviView
+import com.arkivanov.mvikotlin.core.view.ViewRenderer
 import com.example.chatsample.auth.store.AuthStore
 import kotlinx.android.synthetic.main.auth_fragment.view.auth_code_entered_button
 import kotlinx.android.synthetic.main.auth_fragment.view.auth_enter_code_edit_text
@@ -28,10 +30,9 @@ class AuthViewImpl(private val rootView: View): BaseMviView<AuthStore.State, Aut
         }
     }
 
-    override fun render(model: AuthStore.State) {
-        with (rootView) {
-            auth_phone_entered_button.isEnabled = model.sendPhoneNumberEnabled
-            auth_code_entered_button.isEnabled = model.sendCodeEnabled
-        }
+    override val renderer: ViewRenderer<AuthStore.State> = diff {
+        diff(get = AuthStore.State::sendPhoneNumberEnabled, set = { rootView.auth_phone_entered_button.isEnabled = it} )
+        diff(get = AuthStore.State::sendCodeEnabled, set = { rootView.auth_code_entered_button.isEnabled = it} )
+        diff(get = AuthStore.State::currentPhoneNumber, set = { rootView.auth_enter_phone_number_edit_text.setText(it) } )
     }
 }

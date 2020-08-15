@@ -12,6 +12,7 @@ interface AuthStore: Store<AuthStore.Intent, AuthStore.State, AuthStore.Label> {
     }
 
     data class State(
+        val currentPhoneNumber: String = "",
         val authCompleted: Boolean = false,
         val isWaitingForCode: Boolean = false,
         val sendPhoneNumberEnabled: Boolean = false,

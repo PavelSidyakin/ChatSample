@@ -9,8 +9,7 @@ import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
 import com.example.chatsample.ChatApplication
 import com.example.chatsample.R
 import com.example.chatsample.auth.controller.AuthController
-import kotlinx.android.synthetic.main.auth_fragment.*
-import javax.inject.Inject
+import kotlinx.android.synthetic.main.auth_fragment.auth_root_view
 
 class AuthFragment: Fragment() {
 
@@ -27,11 +26,14 @@ class AuthFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.auth_fragment, container, false)
-
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         controller.onViewCreated(AuthViewImpl(auth_root_view), lifecycle.asMviLifecycle())
+    }
+
+    companion object {
+        val FRAGMENT_TAG = AuthFragment::class.qualifiedName
     }
 }

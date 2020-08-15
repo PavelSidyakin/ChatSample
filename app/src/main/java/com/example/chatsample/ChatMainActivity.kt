@@ -12,12 +12,17 @@ class ChatMainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentManager.findFragmentByTag(AuthFragment.FRAGMENT_TAG)?.let {
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.show(it)
+            fragmentTransaction.commit()
+        }?:let {
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.main_activity_container,
+                AuthFragment(), AuthFragment.FRAGMENT_TAG
+            )
+            fragmentTransaction.commit()
+        }
 
-        fragmentTransaction.replace(R.id.main_activity_container,
-            AuthFragment()
-        )
-
-        fragmentTransaction.commit()
         fragmentManager.executePendingTransactions()
     }}

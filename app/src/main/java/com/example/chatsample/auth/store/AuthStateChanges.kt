@@ -6,5 +6,6 @@ sealed class AuthStateChanges {
     data class AuthenticationResult(val authResult: AuthResult) : AuthStateChanges()
     data class SendPhoneEnabled(val enabled: Boolean) : AuthStateChanges()
     data class SendCodeEnabled(val enabled: Boolean) : AuthStateChanges()
+    data class SetCurrentPhoneNumber(val phoneNumber: String) : AuthStateChanges()
     data class Error(val throwable: Throwable) : AuthStateChanges()
 }
