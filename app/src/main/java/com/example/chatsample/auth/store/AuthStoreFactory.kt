@@ -4,7 +4,7 @@ import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.example.chatsample.domain.ChatRepository
+import com.example.chatsample.data.ChatRepository
 
 class AuthStoreFactory(
     private val storeFactory: StoreFactory,
@@ -23,7 +23,7 @@ class AuthStoreFactory(
 
     private fun createExecutor(): Executor<AuthStore.Intent,
             Unit, AuthStore.State, AuthStateChanges, AuthStore.Label> =
-        IntentExecutor(chatRepository)
+        AuthIntentExecutor(chatRepository)
 
 
 }

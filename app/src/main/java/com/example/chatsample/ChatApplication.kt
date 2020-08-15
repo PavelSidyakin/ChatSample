@@ -4,7 +4,7 @@ import android.app.Application
 import com.example.chatsample.data.ContextProvider
 import com.example.chatsample.di.AppComponent
 import com.example.chatsample.di.DaggerAppComponent
-import com.example.chatsample.domain.ChatRepository
+import com.example.chatsample.data.ChatRepository
 import javax.inject.Inject
 
 class ChatApplication : Application() {

@@ -5,7 +5,7 @@ import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.example.chatsample.data.ContextProvider
 import com.example.chatsample.data.ContextProviderImpl
 import com.example.chatsample.data.TelegramChatRepositoryImpl
-import com.example.chatsample.domain.ChatRepository
+import com.example.chatsample.data.ChatRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

@@ -7,17 +7,12 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.bind
 import com.arkivanov.mvikotlin.extensions.coroutines.events
 import com.arkivanov.mvikotlin.extensions.coroutines.states
-import com.example.chatsample.auth.store.AuthStore
 import com.example.chatsample.auth.store.AuthStoreFactory
-import com.example.chatsample.auth.view.AuthEvent
 import com.example.chatsample.auth.view.AuthView
-import com.example.chatsample.auth.view.AuthViewModel
-import com.example.chatsample.domain.ChatRepository
+import com.example.chatsample.data.ChatRepository
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 class AuthControllerImpl @AssistedInject constructor(
     private val storeFactory: StoreFactory,

@@ -5,11 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.arkivanov.mvikotlin.core.view.BaseMviView
 import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
 import com.example.chatsample.ChatApplication
 import com.example.chatsample.R
-import com.example.chatsample.ui.auth.AuthViewState
 import kotlinx.android.synthetic.main.auth_fragment.*
 
 class AuthFragment: Fragment() {
