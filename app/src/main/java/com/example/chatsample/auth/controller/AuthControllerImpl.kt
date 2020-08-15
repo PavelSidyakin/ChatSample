@@ -3,27 +3,23 @@ package com.example.chatsample.auth.controller
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.core.lifecycle.Lifecycle
 import com.arkivanov.mvikotlin.core.lifecycle.doOnDestroy
-import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.bind
 import com.arkivanov.mvikotlin.extensions.coroutines.events
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import com.example.chatsample.auth.store.AuthStoreFactory
 import com.example.chatsample.auth.view.AuthView
-import com.example.chatsample.data.ChatRepository
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Singleton
 
+@Singleton
 class AuthControllerImpl @AssistedInject constructor(
-    private val storeFactory: StoreFactory,
-    private val chatRepository: ChatRepository,
+    authStoreFactory: AuthStoreFactory,
     @Assisted private val lifecycle: Lifecycle
 ) : AuthController {
 
-    private val authStore = AuthStoreFactory(
-        storeFactory = storeFactory,
-        chatRepository = chatRepository
-    ).create()
+    private val authStore = authStoreFactory.create()
 
     init {
 //        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY, Dispatchers.Main) {
@@ -48,6 +44,7 @@ class AuthControllerImpl @AssistedInject constructor(
 
     }
 
+    @Singleton
     @AssistedInject.Factory
     interface Factory {
         fun create(lifecycle: Lifecycle): AuthControllerImpl

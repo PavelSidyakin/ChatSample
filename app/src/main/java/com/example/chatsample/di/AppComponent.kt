@@ -3,7 +3,7 @@ package com.example.chatsample.di
 import com.example.chatsample.ChatApplication
 import com.example.chatsample.ChatMainActivity
 import com.example.chatsample.auth.controller.AuthControllerImpl
-import com.example.chatsample.auth.controller.AuthControllerImpl_AssistedFactory
+import com.example.chatsample.auth.store.AuthIntentExecutorImpl
 import dagger.Component
 import javax.inject.Singleton
 
