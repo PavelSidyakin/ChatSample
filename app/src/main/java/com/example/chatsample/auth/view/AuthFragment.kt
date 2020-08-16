@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.arkivanov.mvikotlin.extensions.androidx.instancekeeper.getInstanceKeeperProvider
 import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
 import com.example.chatsample.ChatApplication
 import com.example.chatsample.R
@@ -14,7 +15,8 @@ import kotlinx.android.synthetic.main.auth_fragment.auth_root_view
 class AuthFragment: Fragment() {
 
     private val controller: AuthController by lazy {
-        ChatApplication.getAppComponent().authControllerFactory.create(lifecycle.asMviLifecycle())
+        ChatApplication.getAppComponent()
+            .authControllerFactory.create(lifecycle.asMviLifecycle(), getInstanceKeeperProvider())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
