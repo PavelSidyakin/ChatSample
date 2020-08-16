@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.Log
 import com.example.chatsample.model.AuthResult
 import com.example.chatsample.model.ChatInfo
+import com.example.chatsample.model.ChatType
 import com.example.chatsample.model.NextChatListInfo
 import com.example.chatsample.model.RequestChatListResult
 import com.example.chatsample.model.UpdateChatListEvent
@@ -12,10 +13,8 @@ import com.example.chatsample.model.UpdateChatListEventType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
@@ -176,7 +175,7 @@ class TelegramChatRepositoryImpl @Inject constructor(
 
                 val chatObject = sendTdApiRequest(TdApi.GetChat(i)) as TdApi.Chat
 
-                chatMap[i] = (ChatInfo(chatObject.title))
+                chatMap[i] = (ChatInfo(chatObject.title, convertTdChatType2ChatType(chatObject.type)))
 
                 if (i == lastId) {
                     lastOrder = chatObject.order
@@ -203,17 +202,25 @@ class TelegramChatRepositoryImpl @Inject constructor(
 
                 val chatObject = sendTdApiRequest(TdApi.GetChat(i)) as TdApi.Chat
 
-                chatMap[i] = (ChatInfo(chatObject.title))
+                chatMap[i] = (ChatInfo(chatObject.title, convertTdChatType2ChatType(chatObject.type)))
 
                 if (i == lastId) {
                     lastOrder = chatObject.order
                 }
             }
 
-            return RequestChatListResult.Ok(chatMap, NextChatListInfo(lastId, lastOrder))
+            return RequestChatListResult.Ok(chatMap, NextChatListInfo(lastOrder, lastId))
         }
 
         throw RuntimeException("requestInitialChatList() failed")
+    }
+
+    private fun convertTdChatType2ChatType(tdChatType: TdApi.ChatType): ChatType {
+        return when (tdChatType) {
+            is TdApi.ChatTypeBasicGroup -> ChatType.GROUP
+            is TdApi.ChatTypeSupergroup -> ChatType.GROUP
+            else -> ChatType.DIRECT
+        }
     }
 
     override suspend fun subscribeChatListUpdates(): Channel<UpdateChatListEvent> {
@@ -227,7 +234,7 @@ class TelegramChatRepositoryImpl @Inject constructor(
                 UpdateChatListEvent(
                     UpdateChatListEventType.ADDED,
                     tdApiObject.chat.id,
-                    ChatInfo(tdApiObject.chat.title)
+                    ChatInfo(tdApiObject.chat.title, convertTdChatType2ChatType(tdApiObject.chat.type))
                 )
             )
         }

@@ -14,16 +14,14 @@ class AuthStoreFactoryImpl @Inject constructor(
     override fun create(): AuthStore =
         object : AuthStore, Store<AuthStore.Intent, AuthStore.State, AuthStore.Label>
         by storeFactory.create(
-            name = "GetPostStore",
+            name = "AuthStore",
             initialState = AuthStore.State(),
             bootstrapper = SimpleBootstrapper(Unit),
-            executorFactory = ::createExecutor,
+            executorFactory = ::getExecutor,
             reducer = AuthReducer()
         ) {}
 
-    private fun createExecutor(): Executor<AuthStore.Intent,
+    private fun getExecutor(): Executor<AuthStore.Intent,
             Unit, AuthStore.State, AuthStateChanges, AuthStore.Label> = authIntentExecutor
-
-
 
 }

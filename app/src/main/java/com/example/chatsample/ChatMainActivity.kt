@@ -1,8 +1,8 @@
 package com.example.chatsample
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.chatsample.auth.view.AuthFragment
+import androidx.appcompat.app.AppCompatActivity
+import com.example.chatsample.chatlist.view.ChatListFragment
 
 class ChatMainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,14 +12,14 @@ class ChatMainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val fragmentManager = supportFragmentManager
-        fragmentManager.findFragmentByTag(AuthFragment.FRAGMENT_TAG)?.let {
+        fragmentManager.findFragmentByTag(ChatListFragment.FRAGMENT_TAG)?.let {
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.show(it)
             fragmentTransaction.commit()
         }?:let {
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.replace(R.id.main_activity_container,
-                AuthFragment(), AuthFragment.FRAGMENT_TAG
+                ChatListFragment(), ChatListFragment.FRAGMENT_TAG
             )
             fragmentTransaction.commit()
         }

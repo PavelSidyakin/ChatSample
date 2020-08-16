@@ -5,4 +5,7 @@
 
     <string name="button_go">➤</string>
 
+    <string name="chat_type_direct">Direct</string>
+    <string name="chat_type_group">Group</string>
+
 </resources>

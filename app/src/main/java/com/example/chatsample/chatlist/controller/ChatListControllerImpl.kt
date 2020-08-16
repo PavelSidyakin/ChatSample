@@ -1,4 +1,4 @@
-package com.example.chatsample.auth.controller
+package com.example.chatsample.chatlist.controller
 
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.core.instancekeeper.InstanceKeeperProvider
@@ -9,44 +9,44 @@ import com.arkivanov.mvikotlin.core.lifecycle.doOnDestroy
 import com.arkivanov.mvikotlin.extensions.coroutines.bind
 import com.arkivanov.mvikotlin.extensions.coroutines.events
 import com.arkivanov.mvikotlin.extensions.coroutines.states
-import com.example.chatsample.auth.store.AuthStore
-import com.example.chatsample.auth.store.AuthStoreFactory
-import com.example.chatsample.auth.view.AuthView
+import com.example.chatsample.chatlist.store.ChatListStore
+import com.example.chatsample.chatlist.store.ChatListStoreFactory
+import com.example.chatsample.chatlist.view.ChatListView
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 
-class AuthControllerImpl @AssistedInject constructor(
-    authStoreFactory: AuthStoreFactory,
+class ChatListControllerImpl @AssistedInject constructor(
+    chatListStoreFactory: ChatListStoreFactory,
     @Assisted private val lifecycle: Lifecycle,
     @Assisted private val instanceKeeperProvider: InstanceKeeperProvider
-) : AuthController {
+): ChatListController {
 
-    private val authStore = instanceKeeperProvider.get<AuthStore>().getOrCreateStore {
-        authStoreFactory.create()
+    private val chatListStore = instanceKeeperProvider.get<ChatListStore>().getOrCreateStore {
+        chatListStoreFactory.create()
     }
 
     init {
 //        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY, Dispatchers.Main) {
 //            //authStore.labels.map { it.toBusEvent() } bindTo { eventBus.send(it)}
 //        }
-        lifecycle.doOnDestroy(authStore::dispose)
+        lifecycle.doOnDestroy(chatListStore::dispose)
     }
 
 
-    override fun onViewCreated(authView: AuthView, viewLifecycle: Lifecycle) {
+    override fun onViewCreated(chatListView: ChatListView, viewLifecycle: Lifecycle) {
         bind(
             viewLifecycle, BinderLifecycleMode.CREATE_DESTROY,
             Dispatchers.Main
         ) {
-            authView.events bindTo authStore
+            chatListView.events bindTo chatListStore
         }
 
         bind(
             viewLifecycle, BinderLifecycleMode.START_STOP,
             Dispatchers.Main
         ) {
-            authStore.states bindTo authView
+            chatListStore.states bindTo chatListView
         }
 
     }
@@ -56,6 +56,7 @@ class AuthControllerImpl @AssistedInject constructor(
         fun create(
             lifecycle: Lifecycle,
             instanceKeeperProvider: InstanceKeeperProvider
-        ): AuthControllerImpl
+        ): ChatListControllerImpl
     }
+
 }

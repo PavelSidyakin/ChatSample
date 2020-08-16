@@ -8,7 +8,8 @@ sealed class RequestChatListResult {
 }
 
 data class ChatInfo(
-    val chatName: String
+    val chatName: String,
+    val chatType: ChatType
 )
 
 data class NextChatListInfo(
@@ -26,4 +27,9 @@ enum class UpdateChatListEventType {
     ADDED,
     REMOVED,
     UPDATED,
+}
+
+enum class ChatType {
+    DIRECT,
+    GROUP,
 }
