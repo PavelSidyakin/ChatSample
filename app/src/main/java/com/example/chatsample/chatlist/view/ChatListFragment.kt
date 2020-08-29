@@ -28,7 +28,7 @@ class ChatListFragment : Fragment(){
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-       controller.onViewCreated(ChatListViewImpl(chat_list_root_view), lifecycle.asMviLifecycle())
+       controller.onViewCreated(ChatListViewImpl(chat_list_root_view, lifecycle), lifecycle.asMviLifecycle())
     }
 
     companion object {

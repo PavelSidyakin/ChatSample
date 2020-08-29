@@ -2,6 +2,7 @@ package com.example.chatsample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.chatsample.auth.view.AuthFragment
 import com.example.chatsample.chatlist.view.ChatListFragment
 
 class ChatMainActivity : AppCompatActivity() {
@@ -20,6 +21,7 @@ class ChatMainActivity : AppCompatActivity() {
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.replace(R.id.main_activity_container,
                 ChatListFragment(), ChatListFragment.FRAGMENT_TAG
+            //AuthFragment(), AuthFragment.FRAGMENT_TAG
             )
             fragmentTransaction.commit()
         }

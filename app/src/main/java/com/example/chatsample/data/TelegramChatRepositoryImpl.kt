@@ -3,6 +3,7 @@ package com.example.chatsample.data
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import com.example.chatsample.chatlist.store.repository.ChatNetworkRepository
 import com.example.chatsample.model.AuthResult
 import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType
@@ -27,7 +28,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class TelegramChatRepositoryImpl @Inject constructor(
     private val contextProvider: ContextProvider
-) : ChatRepository, CoroutineScope {
+) : ChatNetworkRepository, CoroutineScope {
 
     override val coroutineContext: CoroutineContext = Job() + Dispatchers.IO
 
@@ -161,37 +162,39 @@ class TelegramChatRepositoryImpl @Inject constructor(
         return updatesChannel.receive()
     }
 
-    override suspend fun requestInitialChatList(limit: Int): RequestChatListResult {
+//    override suspend fun requestInitialChatList(limit: Int): RequestChatListResult {
+//        val chatMap = mutableMapOf<Long, ChatInfo>()
+//
+//        val requestInitialChatListResult = sendTdApiRequest(TdApi.GetChats(TdApi.ChatListMain(), Long.MAX_VALUE, 0, limit))
+//
+//        var lastId = 0L
+//        if (requestInitialChatListResult is TdApi.Chats) {
+//            var lastOrder = Long.MAX_VALUE
+//            lastId = requestInitialChatListResult.chatIds.last()
+//
+//            for (i: Long in requestInitialChatListResult.chatIds) {
+//
+//                val chatObject = sendTdApiRequest(TdApi.GetChat(i)) as TdApi.Chat
+//
+//                chatMap[i] = (ChatInfo(chatObject.title, convertTdChatType2ChatType(chatObject.type)))
+//
+//                if (i == lastId) {
+//                    lastOrder = chatObject.order
+//                }
+//            }
+//
+//            return RequestChatListResult.Ok(chatMap, NextChatListInfo(lastOrder, lastId))
+//        }
+//
+//        throw RuntimeException("requestInitialChatList() failed")
+//    }
+
+    override suspend fun requestChatList(nextInfo: NextChatListInfo?, limit: Int): RequestChatListResult {
         val chatMap = mutableMapOf<Long, ChatInfo>()
 
-        val requestInitialChatListResult = sendTdApiRequest(TdApi.GetChats(TdApi.ChatListMain(), Long.MAX_VALUE, 0, limit))
+        val nextPageInfo = nextInfo?:NextChatListInfo(Long.MAX_VALUE, 0)
 
-        var lastId = 0L
-        if (requestInitialChatListResult is TdApi.Chats) {
-            var lastOrder = Long.MAX_VALUE
-            lastId = requestInitialChatListResult.chatIds.last()
-
-            for (i: Long in requestInitialChatListResult.chatIds) {
-
-                val chatObject = sendTdApiRequest(TdApi.GetChat(i)) as TdApi.Chat
-
-                chatMap[i] = (ChatInfo(chatObject.title, convertTdChatType2ChatType(chatObject.type)))
-
-                if (i == lastId) {
-                    lastOrder = chatObject.order
-                }
-            }
-
-            return RequestChatListResult.Ok(chatMap, NextChatListInfo(lastOrder, lastId))
-        }
-
-        throw RuntimeException("requestInitialChatList() failed")
-    }
-
-    override suspend fun requestNextChatList(nextInfo: NextChatListInfo, limit: Int): RequestChatListResult {
-        val chatMap = mutableMapOf<Long, ChatInfo>()
-
-        val requestInitialChatListResult = sendTdApiRequest(TdApi.GetChats(TdApi.ChatListMain(), nextInfo.order, nextInfo.chatId, limit))
+        val requestInitialChatListResult = sendTdApiRequest(TdApi.GetChats(TdApi.ChatListMain(), nextPageInfo.order, nextPageInfo.chatId, limit))
 
         var lastId = 0L
         if (requestInitialChatListResult is TdApi.Chats) {

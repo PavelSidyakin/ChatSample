@@ -1,6 +1,7 @@
 package com.example.chatsample.chatlist.view
 
 import android.view.View
+import androidx.lifecycle.Lifecycle
 import com.arkivanov.mvikotlin.core.utils.diff
 import com.arkivanov.mvikotlin.core.view.BaseMviView
 import com.arkivanov.mvikotlin.core.view.ViewRenderer
@@ -11,7 +12,7 @@ import com.example.chatsample.chatlist.view.recycler.ChatListItem
 import kotlinx.android.synthetic.main.chat_list_frament.view.chat_list_list
 import kotlinx.android.synthetic.main.chat_list_frament.view.chat_list_progress
 
-class ChatListViewImpl(private val rootView: View): BaseMviView<ChatListStore.State, ChatListStore.Intent>(), ChatListView {
+class ChatListViewImpl(private val rootView: View, private val lifecycle: Lifecycle): BaseMviView<ChatListStore.State, ChatListStore.Intent>(), ChatListView {
 
     private val chatListClickListeners = object : ChatListClickListeners {
         override val directChatItemClickedListener: (ChatListItem.Direct) -> Unit = {
@@ -33,8 +34,8 @@ class ChatListViewImpl(private val rootView: View): BaseMviView<ChatListStore.St
     }
 
     override val renderer: ViewRenderer<ChatListStore.State> = diff {
-        diff(get = ChatListStore.State::pagedList, set = {
-            chatListAdapter.submitList(it)
+        diff(get = ChatListStore.State::pagingData, set = { pagingData ->
+            pagingData?.let { chatListAdapter.submitData(lifecycle, it) }
         })
 
         diff(get = ChatListStore.State::isLoading, set = { loading ->

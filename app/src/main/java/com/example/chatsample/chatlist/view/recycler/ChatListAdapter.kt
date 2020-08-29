@@ -3,9 +3,9 @@ package com.example.chatsample.chatlist.view.recycler
 import androidx.recyclerview.widget.DiffUtil
 import com.example.chatsample.chatlist.view.recycler.delegates.directChatAdapterDelegate
 import com.example.chatsample.chatlist.view.recycler.delegates.groupChatAdapterDelegate
-import com.hannesdorfmann.adapterdelegates4.paging.PagedListDelegationAdapter
+import com.hannesdorfmann.adapterdelegates4.paging3.PagingDelegationAdapter
 
-class ChatListAdapter(clickListeners: ChatListClickListeners) : PagedListDelegationAdapter<ChatListItem>(ChatListDiffUtilItemCallback(),
+class ChatListAdapter(clickListeners: ChatListClickListeners) : PagingDelegationAdapter<ChatListItem>(ChatListDiffUtilItemCallback(),
     directChatAdapterDelegate(clickListeners.directChatItemClickedListener),
     groupChatAdapterDelegate(clickListeners.groupChatItemClickedListener)
 )

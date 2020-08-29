@@ -1,4 +1,4 @@
-package com.example.chatsample.data
+package com.example.chatsample.chatlist.store.repository
 
 import com.example.chatsample.model.AuthResult
 import com.example.chatsample.model.ChatInfo
@@ -7,14 +7,13 @@ import com.example.chatsample.model.RequestChatListResult
 import com.example.chatsample.model.UpdateChatListEvent
 import kotlinx.coroutines.channels.Channel
 
-interface ChatRepository {
+interface ChatNetworkRepository {
     fun init()
 
     suspend fun authenticate(phoneNumber: String): AuthResult
     suspend fun continueWithCode(code: String): AuthResult
 
-    suspend fun requestInitialChatList(limit: Int): RequestChatListResult
-    suspend fun requestNextChatList(nextInfo: NextChatListInfo, limit: Int): RequestChatListResult
+    suspend fun requestChatList(nextInfo: NextChatListInfo?, limit: Int): RequestChatListResult
 
     suspend fun subscribeChatListUpdates(): Channel<UpdateChatListEvent>
 }

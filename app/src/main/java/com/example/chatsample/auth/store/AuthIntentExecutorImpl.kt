@@ -2,15 +2,14 @@ package com.example.chatsample.auth.store
 
 import android.util.Log
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.example.chatsample.data.ChatRepository
+import com.example.chatsample.chatlist.store.repository.ChatNetworkRepository
 import com.example.chatsample.model.RequestChatListResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.drinkless.td.libcore.telegram.TdApi
 import javax.inject.Inject
 
 class AuthIntentExecutorImpl @Inject constructor(
-    private val chatRepository: ChatRepository
+    private val chatNetworkRepository: ChatNetworkRepository
 ) : SuspendExecutor<AuthStore.Intent, Unit, AuthStore.State, AuthStateChanges, AuthStore.Label>(
         mainContext = Dispatchers.Main
 ), AuthIntentExecutor {
@@ -35,7 +34,7 @@ class AuthIntentExecutorImpl @Inject constructor(
     private suspend fun handleSendCode(code: String) {
         try {
             val result = withContext(Dispatchers.IO) {
-                    return@withContext chatRepository.continueWithCode(code)
+                    return@withContext chatNetworkRepository.continueWithCode(code)
                 }
             dispatch(AuthStateChanges.AuthenticationResult(result))
         } catch (throwable: Throwable) {
@@ -47,10 +46,7 @@ class AuthIntentExecutorImpl @Inject constructor(
         try {
             val result =
                 withContext(Dispatchers.IO) {
-                    val initialResult: RequestChatListResult = chatRepository.requestInitialChatList(5)
-                    Log.i("Chats", "Initial ${chatRepository.requestInitialChatList(5)}")
-                    Log.i("Chats", "Next ${chatRepository.requestNextChatList((initialResult as RequestChatListResult.Ok).nextChatListInfo, 5)}")
-                    return@withContext chatRepository.authenticate(phoneNumber)
+                    return@withContext chatNetworkRepository.authenticate(phoneNumber)
                 }
             dispatch(AuthStateChanges.AuthenticationResult(result))
         } catch (throwable: Throwable) {

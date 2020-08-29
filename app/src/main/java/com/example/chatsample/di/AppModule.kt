@@ -13,7 +13,7 @@ import com.example.chatsample.chatlist.store.ChatListStoreFactoryImpl
 import com.example.chatsample.data.ContextProvider
 import com.example.chatsample.data.ContextProviderImpl
 import com.example.chatsample.data.TelegramChatRepositoryImpl
-import com.example.chatsample.data.ChatRepository
+import com.example.chatsample.chatlist.store.repository.ChatNetworkRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -24,7 +24,7 @@ interface AppModule {
 
     @Singleton
     @Binds
-    fun provideChatRepository(chatRepository: TelegramChatRepositoryImpl): ChatRepository
+    fun provideChatRepository(chatRepository: TelegramChatRepositoryImpl): ChatNetworkRepository
 
     @Singleton
     @Binds
