@@ -175,9 +175,9 @@ class TelegramChatRepositoryImpl @Inject constructor(
         }
 
         return suspendCoroutine { continuation ->
-            Log.i(TAG, "sendTdApiRequestAsync() sending: $function")
+            //Log.i(TAG, "sendTdApiRequestAsync() sending: $function")
             client?.send(function, {
-                Log.i(TAG, "sendTdApiRequestAsync() result: $it")
+                //Log.i(TAG, "sendTdApiRequestAsync() result: $it")
             }, {
                 continuation.resumeWithException(it)
             })

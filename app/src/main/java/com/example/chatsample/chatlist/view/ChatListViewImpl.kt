@@ -1,5 +1,6 @@
 package com.example.chatsample.chatlist.view
 
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -42,7 +43,7 @@ class ChatListViewImpl(
     init {
         with(rootView) {
             rootView.chat_list_list.adapter = chatListAdapter.withLoadingFooter(ChatListLoadStateAdapter(chatListAdapter::retry))
-
+            //rootView.chat_list_list.adapter = chatListAdapter.withLoadStateFooter(ChatListLoadStateAdapter(chatListAdapter::retry))
 //            chatListAdapter.addLoadStateListener { loadStates ->
 //                footer.loadState = when (loadStates.refresh) {
 //                    is LoadState.NotLoading -> loadStates.append
@@ -58,10 +59,25 @@ class ChatListViewImpl(
         footer: LoadStateAdapter<*>
     ): ConcatAdapter {
         addLoadStateListener { loadStates ->
-            footer.loadState = when (loadStates.refresh) {
-                is LoadState.NotLoading -> loadStates.append
-                else -> loadStates.refresh
+            Log.i("LoadState", "append: ${loadStates.append}")
+            Log.i("LoadState", "refresh: ${loadStates.refresh}")
+
+            if (loadStates.refresh is LoadState.Loading) {
+                footer.loadState = LoadState.Loading
+            } else {
+                footer.loadState = loadStates.append
             }
+
+//            footer.loadState = when (loadStates.refresh) {
+//                is LoadState.NotLoading -> LoadState.Loading
+//                else -> {
+//                    if (loadStates.append.endOfPaginationReached) {
+//                        LoadState.NotLoading(true)
+//                    } else {
+//                        loadStates.append
+//                    }
+//                }
+//            }
         }
         return ConcatAdapter(this, footer)
     }
