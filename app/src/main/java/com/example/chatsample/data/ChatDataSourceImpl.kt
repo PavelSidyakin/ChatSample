@@ -26,8 +26,7 @@ class ChatDataSourceImpl @Inject constructor(
     private val pageListConfig =
         PagingConfig(
             pageSize = 10,
-            initialLoadSize = 15,
-            enablePlaceholders = false
+            initialLoadSize = 30
         )
 
     @ExperimentalPagingApi
