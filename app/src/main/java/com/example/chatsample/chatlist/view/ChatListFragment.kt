@@ -10,7 +10,6 @@ import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
 import com.example.chatsample.ChatApplication
 import com.example.chatsample.R
 import com.example.chatsample.chatlist.controller.ChatListController
-import kotlinx.android.synthetic.main.chat_list_frament.chat_list_list
 import kotlinx.android.synthetic.main.chat_list_frament.chat_list_root_view
 
 class ChatListFragment : Fragment(){
@@ -28,7 +27,7 @@ class ChatListFragment : Fragment(){
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-       controller.onViewCreated(ChatListViewImpl(chat_list_root_view, lifecycle), lifecycle.asMviLifecycle())
+       controller.onViewCreated(ChatListViewImpl(chat_list_root_view, lifecycle, viewLifecycleOwner), lifecycle.asMviLifecycle())
     }
 
     companion object {

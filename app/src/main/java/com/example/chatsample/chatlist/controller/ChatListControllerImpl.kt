@@ -30,7 +30,7 @@ class ChatListControllerImpl @AssistedInject constructor(
 //        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY, Dispatchers.Main) {
 //            //authStore.labels.map { it.toBusEvent() } bindTo { eventBus.send(it)}
 //        }
-        lifecycle.doOnDestroy(chatListStore::dispose)
+        //lifecycle.doOnDestroy(chatListStore::dispose)
     }
 
 

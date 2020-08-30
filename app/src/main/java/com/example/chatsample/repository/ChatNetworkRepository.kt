@@ -1,7 +1,6 @@
-package com.example.chatsample.chatlist.store.repository
+package com.example.chatsample.repository
 
 import com.example.chatsample.model.AuthResult
-import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.NextChatListInfo
 import com.example.chatsample.model.RequestChatListResult
 import com.example.chatsample.model.UpdateChatListEvent

@@ -1,35 +1,44 @@
 package com.example.chatsample.model
 
+import java.io.Serializable
+
 sealed class RequestChatListResult {
     data class Ok(
-        val chatMap: Map<Long, ChatInfo>, // chat ID to ChatInfo
-        val nextChatListInfo: NextChatListInfo
+        val chats: List<ChatInfo>,
+        val nextChatListInfo: NextChatListInfo?
     ) : RequestChatListResult()
 }
 
 data class ChatInfo(
+    val chatId: Long,
     val chatName: String,
-    val chatType: ChatType
+    val chatType: ChatType,
+    val chatOrder: Long
 )
 
 data class NextChatListInfo(
     val order: Long,
     val chatId: Long
-)
+) : Serializable
 
 data class UpdateChatListEvent(
-    val type: UpdateChatListEventType,
-    val chatId: Long,
-    val chatInfo: ChatInfo?
+    val chatInfo: ChatInfo
 )
 
-enum class UpdateChatListEventType {
-    ADDED,
-    REMOVED,
-    UPDATED,
-}
+//enum class UpdateChatListEventType {
+//    ADDED,
+//    REMOVED,
+//    UPDATED,
+//}
 
-enum class ChatType {
-    DIRECT,
-    GROUP,
+enum class ChatType(val id: Int) {
+    DIRECT(1),
+    GROUP(2),
+    ;
+    companion object {
+        fun byId(id: Int): ChatType {
+            return values().find { it.id == id }?:throw RuntimeException("Wrong type id: $id")
+        }
+    }
+
 }

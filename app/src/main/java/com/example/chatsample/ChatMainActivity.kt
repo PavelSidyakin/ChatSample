@@ -27,4 +27,10 @@ class ChatMainActivity : AppCompatActivity() {
         }
 
         fragmentManager.executePendingTransactions()
-    }}
+    }
+
+    override fun onBackPressed() {
+        finish()
+    }
+
+}

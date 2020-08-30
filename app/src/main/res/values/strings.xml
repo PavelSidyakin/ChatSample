@@ -8,4 +8,6 @@
     <string name="chat_type_direct">Direct</string>
     <string name="chat_type_group">Group</string>
 
+    <string name="error_text">Something went wrong. Tap here to retry</string>
+
 </resources>

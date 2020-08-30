@@ -1,9 +1,7 @@
 package com.example.chatsample.auth.store
 
-import android.util.Log
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.example.chatsample.chatlist.store.repository.ChatNetworkRepository
-import com.example.chatsample.model.RequestChatListResult
+import com.example.chatsample.repository.ChatNetworkRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
