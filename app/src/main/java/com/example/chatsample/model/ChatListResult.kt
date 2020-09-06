@@ -13,7 +13,7 @@ data class ChatInfo(
     val chatId: Long,
     val chatName: String,
     val chatType: ChatType,
-    val chatOrder: Long
+    val chatOrder: Long,
 )
 
 data class NextChatListInfo(
@@ -34,6 +34,7 @@ data class UpdateChatListEvent(
 enum class ChatType(val id: Int) {
     DIRECT(1),
     GROUP(2),
+    LOADING(3), // Workaround to add loading item correctly
     ;
     companion object {
         fun byId(id: Int): ChatType {

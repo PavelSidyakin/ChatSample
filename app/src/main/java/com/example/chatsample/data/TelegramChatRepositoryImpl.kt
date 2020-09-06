@@ -46,7 +46,7 @@ class TelegramChatRepositoryImpl @Inject constructor(
                 isConnected = o.state.constructor == ConnectionStateReady.CONSTRUCTOR
             }
 
-            Log.i(TAG, "UpdatesHandler received $o")
+            //Log.i(TAG, "UpdatesHandler received $o")
             o?.let {
                 launch {
                     updatesChannel.send(it)
@@ -154,9 +154,9 @@ class TelegramChatRepositoryImpl @Inject constructor(
         }
 
         return suspendCoroutine { continuation ->
-            Log.i(TAG, "sendTdApiRequest() sending: $function")
+            //Log.i(TAG, "sendTdApiRequest() sending: $function")
             client?.send(function, {
-                Log.i(TAG, "sendTdApiRequest() result: $it")
+                //Log.i(TAG, "sendTdApiRequest() result: $it")
                 continuation.resume(it)
             }, {
                 continuation.resumeWithException(it)
@@ -172,6 +172,8 @@ class TelegramChatRepositoryImpl @Inject constructor(
             Log.i(TAG, "sendTdApiRequestAsync() sendTdLibParams result: $tdApiResult")
             tdApiResult = sendTdApiRequest(TdApi.CheckDatabaseEncryptionKey(byteArrayOf()))
             Log.i(TAG, "sendTdApiRequestAsync() CheckDatabaseEncryptionKey result: $tdApiResult")
+            sendTdApiRequestAsync(TdApi.SetLogVerbosityLevel(0))
+
         }
 
         return suspendCoroutine { continuation ->
@@ -228,7 +230,7 @@ class TelegramChatRepositoryImpl @Inject constructor(
         actualizeNetworkState()
 
         if (!isConnected) {
-            throw RuntimeException("Client is not connected")
+           // throw RuntimeException("Client is not connected")
         }
 
         val chatList = mutableListOf<ChatInfo>()
@@ -254,7 +256,7 @@ class TelegramChatRepositoryImpl @Inject constructor(
                     i,
                     chatObject.title,
                     convertTdChatType2ChatType(chatObject.type),
-                    chatObject.order
+                    chatObject.order,
                 ))
 
                 if (i == lastId) {
@@ -290,7 +292,7 @@ class TelegramChatRepositoryImpl @Inject constructor(
                         tdApiObject.chat.id,
                         tdApiObject.chat.title,
                         convertTdChatType2ChatType(tdApiObject.chat.type),
-                        tdApiObject.chat.order
+                        tdApiObject.chat.order,
                     )
                 )
             )

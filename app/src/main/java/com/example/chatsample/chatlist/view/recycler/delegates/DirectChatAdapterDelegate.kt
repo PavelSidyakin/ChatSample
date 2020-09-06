@@ -8,8 +8,8 @@ import com.hannesdorfmann.adapterdelegates4.dsl.adapterLayoutContainer
 import kotlinx.android.synthetic.main.chat_list_item.view.chat_list_item_name
 import kotlinx.android.synthetic.main.chat_list_item.view.chat_list_item_type
 
-fun directChatAdapterDelegate(itemClickedListener: (ChatListItem.Direct) -> Unit): AdapterDelegate<AdapterItemProvider<ChatListItem>> {
-    return adapterLayoutContainer<ChatListItem.Direct, ChatListItem>(R.layout.chat_list_item) {
+fun directChatAdapterDelegate(itemClickedListener: (ChatListItem.Chat.Direct) -> Unit): AdapterDelegate<AdapterItemProvider<ChatListItem>> {
+    return adapterLayoutContainer<ChatListItem.Chat.Direct, ChatListItem>(R.layout.chat_list_item) {
 
         itemView.setOnClickListener { itemClickedListener(item) }
 

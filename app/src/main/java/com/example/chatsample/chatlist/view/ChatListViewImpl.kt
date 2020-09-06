@@ -7,7 +7,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingData
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import com.arkivanov.mvikotlin.core.utils.diff
 import com.arkivanov.mvikotlin.core.view.BaseMviView
@@ -17,8 +16,6 @@ import com.example.chatsample.chatlist.view.recycler.ChatListAdapter
 import com.example.chatsample.chatlist.view.recycler.ChatListClickListeners
 import com.example.chatsample.chatlist.view.recycler.ChatListDelegationAdapter
 import com.example.chatsample.chatlist.view.recycler.ChatListItem
-import com.example.chatsample.chatlist.view.recycler.ChatListItem2
-import com.example.chatsample.chatlist.view.recycler.ChatListLoadStateAdapter
 import kotlinx.android.synthetic.main.chat_list_frament.view.chat_list_list
 import kotlinx.android.synthetic.main.chat_list_frament.view.chat_list_swipe_refresh
 
@@ -29,11 +26,15 @@ class ChatListViewImpl(
 ): BaseMviView<ChatListStore.State, ChatListStore.Intent>(), ChatListView {
 
     private val chatListClickListeners = object : ChatListClickListeners {
-        override val directChatItemClickedListener: (ChatListItem.Direct) -> Unit = {
+        override val loadingItemClickListener: () -> Unit = {
 
         }
 
-        override val groupChatItemClickedListener: (ChatListItem.Group) -> Unit = {
+        override val directChatItemClickedListener: (ChatListItem.Chat.Direct) -> Unit = {
+
+        }
+
+        override val groupChatItemClickedListener: (ChatListItem.Chat.Group) -> Unit = {
 
         }
     }
@@ -43,6 +44,19 @@ class ChatListViewImpl(
 
     init {
         with(rootView) {
+
+//            chatListAdapter.addLoadStateListener {
+//                    loadStates ->
+//                Log.i("LoadState", "append: ${loadStates.append}")
+//                Log.i("LoadState", "refresh: ${loadStates.refresh}")
+//
+//
+//                if (loadStates.refresh is LoadState.Loading) {
+//                    dispatch(ChatListStore.Intent.LoadingState(true))
+//                } else {
+//                    dispatch(ChatListStore.Intent.LoadingState(loadStates.append is LoadState.Loading))
+//                }
+//            }
             rootView.chat_list_list.adapter = chatListAdapter
 
                 //.withLoadingFooter(ChatListLoadStateAdapter(chatListAdapter::retry))

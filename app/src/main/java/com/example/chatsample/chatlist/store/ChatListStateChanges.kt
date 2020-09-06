@@ -2,7 +2,6 @@ package com.example.chatsample.chatlist.store
 
 import androidx.paging.PagingData
 import com.example.chatsample.chatlist.view.recycler.ChatListItem
-import com.example.chatsample.chatlist.view.recycler.ChatListItem2
 
 sealed class ChatListStateChanges {
     class LoadingStarted(): ChatListStateChanges()

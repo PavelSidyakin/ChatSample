@@ -15,9 +15,8 @@ import androidx.room.RoomDatabase
 import com.example.chatsample.model.ChatType
 
 // ------------------------- Entities ---------------------------------
-@Entity(tableName = "chats")
+@Entity(tableName = "chats", primaryKeys = ["f_chat_id"])
 data class DbChatListItem(
-    @PrimaryKey
     @ColumnInfo(name = "f_chat_id")
     val chatId: Long,
 
@@ -28,7 +27,7 @@ data class DbChatListItem(
     val chatName: String,
 
     @ColumnInfo(name = "f_chat_type")
-    val chatType: Int /** Values from [ChatType] */
+    val chatType: Int, /** Values from [ChatType] */
 )
 
 @Entity(tableName = "chats_remote_key")
@@ -40,7 +39,7 @@ data class DbSubChatListRemoteKey(
 // ------------------------- Dao ---------------------------------
 @Dao
 interface ChatsDao {
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(chats: List<DbChatListItem>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
