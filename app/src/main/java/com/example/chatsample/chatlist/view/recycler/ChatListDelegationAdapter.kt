@@ -1,15 +1,19 @@
 package com.example.chatsample.chatlist.view.recycler
 
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.example.chatsample.chatlist.view.recycler.delegates.directChatAdapterDelegate
+import com.example.chatsample.chatlist.view.recycler.delegates.fallbackAdapterDelegate
 import com.example.chatsample.chatlist.view.recycler.delegates.groupChatAdapterDelegate
 import com.hannesdorfmann.adapterdelegates4.paging3.PagingDelegationAdapter
 
-//class ChatListDelegationAdapter(clickListeners: ChatListClickListeners) : PagingDelegationAdapter<ChatListItem>(ChatListDiffUtilItemCallback(),
-//    directChatAdapterDelegate(clickListeners.directChatItemClickedListener),
-//    groupChatAdapterDelegate(clickListeners.groupChatItemClickedListener)
-//)
+class ChatListDelegationAdapter(clickListeners: ChatListClickListeners) : PagingDelegationAdapter<ChatListItem>(ChatListDiffUtilItemCallback(),
+    directChatAdapterDelegate(clickListeners.directChatItemClickedListener),
+    groupChatAdapterDelegate(clickListeners.groupChatItemClickedListener),
+) {
+    init {
+        delegatesManager.fallbackDelegate = fallbackAdapterDelegate()
+    }
+}
 
 interface ChatListClickListeners {
     val directChatItemClickedListener: (ChatListItem.Direct) -> Unit

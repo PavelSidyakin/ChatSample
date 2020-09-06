@@ -15,6 +15,7 @@ import com.arkivanov.mvikotlin.core.view.ViewRenderer
 import com.example.chatsample.chatlist.store.ChatListStore
 import com.example.chatsample.chatlist.view.recycler.ChatListAdapter
 import com.example.chatsample.chatlist.view.recycler.ChatListClickListeners
+import com.example.chatsample.chatlist.view.recycler.ChatListDelegationAdapter
 import com.example.chatsample.chatlist.view.recycler.ChatListItem
 import com.example.chatsample.chatlist.view.recycler.ChatListItem2
 import com.example.chatsample.chatlist.view.recycler.ChatListLoadStateAdapter
@@ -37,12 +38,14 @@ class ChatListViewImpl(
         }
     }
 
-    private val chatListAdapter = ChatListAdapter(chatListClickListeners)
+    private val chatListAdapter = ChatListDelegationAdapter(chatListClickListeners)
 
 
     init {
         with(rootView) {
-            rootView.chat_list_list.adapter = chatListAdapter.withLoadingFooter(ChatListLoadStateAdapter(chatListAdapter::retry))
+            rootView.chat_list_list.adapter = chatListAdapter
+
+                //.withLoadingFooter(ChatListLoadStateAdapter(chatListAdapter::retry))
             //rootView.chat_list_list.adapter = chatListAdapter.withLoadStateFooter(ChatListLoadStateAdapter(chatListAdapter::retry))
 //            chatListAdapter.addLoadStateListener { loadStates ->
 //                footer.loadState = when (loadStates.refresh) {

@@ -70,7 +70,7 @@ dependencies {
 //    implementation 'com.hannesdorfmann:adapterdelegates4-pagination:4.3.0'
 
     // MVIKotlin
-    def mvikotlinVersion = "2.0.0-rc2"
+    def mvikotlinVersion = "2.0.0-rc3"
     implementation "com.arkivanov.mvikotlin:mvikotlin:$mvikotlinVersion"
     implementation "com.arkivanov.mvikotlin:mvikotlin-main:$mvikotlinVersion"
     implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$mvikotlinVersion"
