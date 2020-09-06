@@ -4,7 +4,6 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.example.chatsample.chatlist.view.recycler.ChatListItem
-import com.example.chatsample.chatlist.view.recycler.ChatListItem2
 import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType
 import com.example.chatsample.repository.ChatDataSource
@@ -44,13 +43,9 @@ class ChatListIntentExecutorImpl @Inject constructor(
 
     private fun convertChatInfo2ChatListItem(chatInfo: ChatInfo): ChatListItem {
         return when (chatInfo.chatType) {
-            ChatType.DIRECT -> ChatListItem.Direct(chatInfo.chatId, chatInfo.chatName)
-            ChatType.GROUP -> ChatListItem.Group(chatInfo.chatId, chatInfo.chatName)
+            ChatType.DIRECT -> ChatListItem.Chat.Direct(chatInfo.chatId, chatInfo.chatName)
+            ChatType.GROUP -> ChatListItem.Chat.Group(chatInfo.chatId, chatInfo.chatName)
         }
-    }
-
-    private fun convertChatInfo2ChatListItem2(chatInfo: ChatInfo): ChatListItem2 {
-        return ChatListItem2(chatInfo.chatId, chatInfo.chatName, chatInfo.chatType)
     }
 
 }

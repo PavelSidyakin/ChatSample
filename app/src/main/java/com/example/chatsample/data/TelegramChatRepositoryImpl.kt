@@ -168,6 +168,7 @@ class TelegramChatRepositoryImpl @Inject constructor(
         if (client == null) {
             var tdApiResult = createClient()
             Log.i(TAG, "sendTdApiRequestAsync() create client result: $tdApiResult")
+            sendTdApiRequestAsync(TdApi.SetLogVerbosityLevel(0))
             tdApiResult = sendTdLibParams()
             Log.i(TAG, "sendTdApiRequestAsync() sendTdLibParams result: $tdApiResult")
             tdApiResult = sendTdApiRequest(TdApi.CheckDatabaseEncryptionKey(byteArrayOf()))

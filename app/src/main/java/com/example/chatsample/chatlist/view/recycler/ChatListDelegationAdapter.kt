@@ -1,33 +1,54 @@
 package com.example.chatsample.chatlist.view.recycler
 
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.example.chatsample.chatlist.view.recycler.delegates.directChatAdapterDelegate
 import com.example.chatsample.chatlist.view.recycler.delegates.fallbackAdapterDelegate
 import com.example.chatsample.chatlist.view.recycler.delegates.groupChatAdapterDelegate
+import com.example.chatsample.chatlist.view.recycler.delegates.loadingAdapterDelegate
+import com.example.chatsample.chatlist.view.recycler.delegates.placeHolderAdapterDelegate
 import com.hannesdorfmann.adapterdelegates4.paging3.PagingDelegationAdapter
 
 class ChatListDelegationAdapter(clickListeners: ChatListClickListeners) : PagingDelegationAdapter<ChatListItem>(ChatListDiffUtilItemCallback(),
     directChatAdapterDelegate(clickListeners.directChatItemClickedListener),
     groupChatAdapterDelegate(clickListeners.groupChatItemClickedListener),
+    loadingAdapterDelegate(clickListeners.loadingItemClickListener),
+    placeHolderAdapterDelegate(),
 ) {
     init {
         delegatesManager.fallbackDelegate = fallbackAdapterDelegate()
     }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        super.onBindViewHolder(holder, position)
+    }
+
+    override fun toString(): String {
+        return "items: ${snapshot()}"
+    }
 }
 
 interface ChatListClickListeners {
-    val directChatItemClickedListener: (ChatListItem.Direct) -> Unit
-    val groupChatItemClickedListener: (ChatListItem.Group) -> Unit
+    val loadingItemClickListener: () -> Unit
+    val directChatItemClickedListener: (ChatListItem.Chat.Direct) -> Unit
+    val groupChatItemClickedListener: (ChatListItem.Chat.Group) -> Unit
 }
 
 class ChatListDiffUtilItemCallback : DiffUtil.ItemCallback<ChatListItem>() {
 
     override fun areItemsTheSame(oldItem: ChatListItem, newItem: ChatListItem): Boolean {
-        return oldItem.chatId == newItem.chatId
+        if (oldItem is ChatListItem.Chat && newItem is ChatListItem.Chat) {
+            return oldItem.chatId == newItem.chatId
+        }
+
+//        if (oldItem is ChatListItem.Loading && newItem is ChatListItem.Loading) {
+//            return true
+//        }
+
+        return false
     }
 
     override fun areContentsTheSame(oldItem: ChatListItem, newItem: ChatListItem): Boolean {
         return oldItem == newItem
     }
-
 }

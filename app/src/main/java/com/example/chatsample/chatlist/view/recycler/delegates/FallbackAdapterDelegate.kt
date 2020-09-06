@@ -7,7 +7,7 @@ import com.hannesdorfmann.adapterdelegates4.AdapterItemProvider
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterLayoutContainer
 
 fun fallbackAdapterDelegate(): AdapterDelegate<AdapterItemProvider<ChatListItem>> {
-    return adapterLayoutContainer<ChatListItem.Direct, ChatListItem>(R.layout.fallback_item_view) {
+    return adapterLayoutContainer(R.layout.fallback_item_view) {
 
         bind { diffPayloads ->
         }

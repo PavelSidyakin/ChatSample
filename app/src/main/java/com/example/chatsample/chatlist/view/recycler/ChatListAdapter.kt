@@ -1,20 +1,14 @@
 package com.example.chatsample.chatlist.view.recycler
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatsample.R
-import com.example.chatsample.model.ChatType
 import kotlinx.android.synthetic.main.chat_list_item.view.chat_list_item_name
 import kotlinx.android.synthetic.main.chat_list_item.view.chat_list_item_type
 import kotlinx.android.synthetic.main.load_state_list_item.view.loading_item_error_text
@@ -41,12 +35,12 @@ class ChatListItemViewHolder(view: View, private val clickListeners: ChatListCli
         }
 
         when (chatListItem) {
-            is ChatListItem.Direct -> {
+            is ChatListItem.Chat.Direct -> {
                 itemView.chat_list_item_type.text = itemView.context.getString(R.string.chat_type_direct)
                 itemView.chat_list_item_name.text = chatListItem.name
                 itemView.setOnClickListener { clickListeners.directChatItemClickedListener(chatListItem) }
             }
-            is ChatListItem.Group ->  {
+            is ChatListItem.Chat.Group ->  {
                 itemView.chat_list_item_type.text = itemView.context.getString(R.string.chat_type_group)
                 itemView.chat_list_item_name.text = chatListItem.name
                 itemView.setOnClickListener { clickListeners.groupChatItemClickedListener(chatListItem) }
