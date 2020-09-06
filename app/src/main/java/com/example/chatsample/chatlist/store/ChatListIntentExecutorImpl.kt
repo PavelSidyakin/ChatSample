@@ -11,6 +11,7 @@ import com.example.chatsample.repository.ChatDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ChatListIntentExecutorImpl @Inject constructor(
@@ -33,9 +34,10 @@ class ChatListIntentExecutorImpl @Inject constructor(
 
     private suspend fun handleActionLoadList() = coroutineScope {
         chatDataSource.observeChatList()
+            .map { pagingData -> pagingData.map { convertChatInfo2ChatListItem(it) } }
             .cachedIn(this)
             .collectLatest { pagingData ->
-                dispatch(ChatListStateChanges.ListChanged(pagingData.map { convertChatInfo2ChatListItem(it) }))
+                dispatch(ChatListStateChanges.ListChanged(pagingData))
                 dispatch(ChatListStateChanges.RefreshStateChanged(false))
             }
     }
