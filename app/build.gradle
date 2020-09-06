@@ -42,25 +42,29 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.1'
+
+    // Android X
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
-    implementation 'androidx.paging:paging-runtime:3.0.0-alpha05'
+    // Paging
+    implementation 'androidx.paging:paging-runtime:3.0.0-alpha06'
 
+    // Dagger
     implementation 'com.google.dagger:dagger-android:2.27'
     kapt 'com.google.dagger:dagger-compiler:2.27'
-
     implementation 'com.squareup.inject:assisted-inject-annotations-dagger2:0.5.2'
     kapt 'com.squareup.inject:assisted-inject-processor-dagger2:0.5.2'
 
+    // Adapter delegates
+    // Temporary use unofficial fork of adapter delegates.
+    // Paging 3 is not supported officially yet.
     implementation(name:'library-debug', ext:'aar')
     implementation(name:'kotlin-dsl-debug', ext:'aar')
     implementation(name:'kotlin-dsl-layoutcontainer-debug', ext:'aar')
     implementation(name:'paging3-debug', ext:'aar')
     implementation(name:'paging-debug', ext:'aar')
-
-
 //    implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.0'
 //    implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-layoutcontainer:4.3.0'
 //    implementation 'com.hannesdorfmann:adapterdelegates4-pagination:4.3.0'
