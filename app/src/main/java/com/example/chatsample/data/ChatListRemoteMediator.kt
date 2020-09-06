@@ -10,6 +10,7 @@ import com.example.chatsample.model.RequestChatListResult
 import com.example.chatsample.repository.ChatNetworkRepository
 import com.example.chatsample.utils.parseString
 import com.example.chatsample.utils.serializeToString
+import kotlinx.coroutines.delay
 
 @ExperimentalPagingApi
 class ChatListRemoteMediator(
@@ -49,6 +50,7 @@ class ChatListRemoteMediator(
                     else -> state.config.pageSize
                 }
             )
+            delay(1000)
 
             if (networkChatListResult is RequestChatListResult.Ok) {
                 db.withTransaction {

@@ -1,5 +1,6 @@
 package com.example.chatsample.chatlist.store
 
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
@@ -32,10 +33,13 @@ class ChatListIntentExecutorImpl @Inject constructor(
     }
 
     private suspend fun handleActionLoadList() = coroutineScope {
+        dispatch(ChatListStateChanges.ListChanged(PagingData.from(listOf(ChatListItem.Loading()))))
+
         chatDataSource.observeChatList()
             .map { pagingData -> pagingData.map { convertChatInfo2ChatListItem(it) } }
             .cachedIn(this)
             .collectLatest { pagingData ->
+
                 dispatch(ChatListStateChanges.ListChanged(pagingData))
                 dispatch(ChatListStateChanges.RefreshStateChanged(false))
             }

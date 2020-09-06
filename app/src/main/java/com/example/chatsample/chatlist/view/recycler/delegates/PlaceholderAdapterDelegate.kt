@@ -8,14 +8,15 @@ import com.example.chatsample.R
 import com.example.chatsample.chatlist.view.recycler.ChatListItem
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
 import com.hannesdorfmann.adapterdelegates4.AdapterItemProvider
+import com.hannesdorfmann.adapterdelegates4.dsl.AdapterDelegateLayoutContainerViewHolder
 
 fun placeHolderAdapterDelegate(): AdapterDelegate<AdapterItemProvider<ChatListItem>> {
     return object : AdapterDelegate<AdapterItemProvider<ChatListItem>>() {
-        override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-            return object : RecyclerView.ViewHolder(
+        override fun onCreateViewHolder(parent: ViewGroup): AdapterDelegateLayoutContainerViewHolder<ChatListItem> {
+            return AdapterDelegateLayoutContainerViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.fallback_item_view, parent, false)
-            ) {}
+            )
         }
 
         override fun isForViewType(p0: AdapterItemProvider<ChatListItem>, p1: Int): Boolean {

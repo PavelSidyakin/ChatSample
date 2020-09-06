@@ -34,7 +34,6 @@ fun loadingAdapterDelegate(itemClickedListener: () -> Unit): AdapterDelegate<Ada
 //    }
 
     return adapterLayoutContainer<ChatListItem.Loading, ChatListItem>(R.layout.load_state_list_item) {
-
         itemView.setOnClickListener { itemClickedListener() }
 
         bind { diffPayloads ->

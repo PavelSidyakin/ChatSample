@@ -47,6 +47,11 @@ class ChatListViewImpl(
     init {
         with(rootView) {
             rootView.chat_list_list.adapter = chatListAdapter
+                .withLoadStateFooter(ChatListLoadStateAdapter(
+                retry = {
+
+                }
+            ))
 
                 //.withLoadingFooter(ChatListLoadStateAdapter(chatListAdapter::retry))
             //rootView.chat_list_list.adapter = chatListAdapter.withLoadStateFooter(ChatListLoadStateAdapter(chatListAdapter::retry))
