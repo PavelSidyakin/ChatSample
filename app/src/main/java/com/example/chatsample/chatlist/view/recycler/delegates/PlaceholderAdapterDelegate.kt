@@ -1,14 +1,13 @@
 package com.example.chatsample.chatlist.view.recycler.delegates
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatsample.R
 import com.example.chatsample.chatlist.view.recycler.ChatListItem
+import com.example.chatsample.deleates_dsl.dsl.AdapterDelegateLayoutContainerViewHolder
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
 import com.hannesdorfmann.adapterdelegates4.AdapterItemProvider
-import com.hannesdorfmann.adapterdelegates4.dsl.AdapterDelegateLayoutContainerViewHolder
 
 fun placeHolderAdapterDelegate(): AdapterDelegate<AdapterItemProvider<ChatListItem>> {
     return object : AdapterDelegate<AdapterItemProvider<ChatListItem>>() {
@@ -19,8 +18,8 @@ fun placeHolderAdapterDelegate(): AdapterDelegate<AdapterItemProvider<ChatListIt
             )
         }
 
-        override fun isForViewType(p0: AdapterItemProvider<ChatListItem>, p1: Int): Boolean {
-            return p0.getAdapterItem(p1) == null
+        override fun isForViewType(adapterItemProvider: AdapterItemProvider<ChatListItem>, position: Int): Boolean {
+            return adapterItemProvider.getAdapterItem(position) == null
         }
 
         override fun onBindViewHolder(p0: AdapterItemProvider<ChatListItem>, p1: Int, p2: RecyclerView.ViewHolder, p3: MutableList<Any>) {

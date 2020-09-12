@@ -1,7 +1,7 @@
 package com.example.chatsample.auth.store
 
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.example.chatsample.chatlist.store.recycler.ChatNetworkRepository
+import com.example.chatsample.chatlist.store.ChatNetworkRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

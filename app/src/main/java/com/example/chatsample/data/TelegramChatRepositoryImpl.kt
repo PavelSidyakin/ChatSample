@@ -3,34 +3,28 @@ package com.example.chatsample.data
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import com.example.chatsample.chatlist.store.recycler.ChatNetworkRepository
+import com.example.chatsample.chatlist.store.ChatNetworkRepository
 import com.example.chatsample.model.AuthResult
 import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType
 import com.example.chatsample.model.NextChatListInfo
 import com.example.chatsample.model.RequestChatListResult
 import com.example.chatsample.model.UpdateChatListEvent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.receiveAsFlow
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
 import org.drinkless.td.libcore.telegram.TdApi.ConnectionStateReady
 import javax.inject.Inject
-import kotlin.RuntimeException
-import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class TelegramChatRepositoryImpl @Inject constructor(
     private val contextProvider: ContextProvider
-) : ChatNetworkRepository, CoroutineScope {
-
-    override val coroutineContext: CoroutineContext = Job() + Dispatchers.IO
+) : ChatNetworkRepository {
 
     private var client: Client? = null
 
@@ -45,24 +39,17 @@ class TelegramChatRepositoryImpl @Inject constructor(
                 isConnected = o.state.constructor == ConnectionStateReady.CONSTRUCTOR
             }
 
-            //Log.i(TAG, "UpdatesHandler received $o")
+            Log.i(TAG, "UpdatesHandler received $o".replace("\n", ""))
             o?.let {
-                launch {
-                    updatesChannel.send(it)
-                }
+                updatesChannel.offer(it)
             }
         }
-
     }
 
     private val exceptionHandler = object : Client.ExceptionHandler {
         override fun onException(e: Throwable?) {
             Log.w(TAG, e)
         }
-
-    }
-
-    override fun init() {
     }
 
     override suspend fun authenticate(phoneNumber: String): AuthResult {
@@ -87,13 +74,6 @@ class TelegramChatRepositoryImpl @Inject constructor(
                 )
             )
         )
-
-//        if (tdApiResult is TdApi.UpdateAuthorizationState) {
-//            if (tdApiResult.authorizationState.constructor == TdApi.AuthorizationStateWaitTdlibParameters.CONSTRUCTOR) {
-//                tdApiResult = sendTdLibParams()
-//                Log.i(TAG, "authenticate() sendTdLibParams result: $tdApiResult")
-//            }
-//        }
 
         if (tdApiResult.constructor == TdApi.AuthorizationStateReady.CONSTRUCTOR) {
             return AuthResult.Ok()
@@ -192,33 +172,6 @@ class TelegramChatRepositoryImpl @Inject constructor(
         return updatesChannel.receive()
     }
 
-//    override suspend fun requestInitialChatList(limit: Int): RequestChatListResult {
-//        val chatMap = mutableMapOf<Long, ChatInfo>()
-//
-//        val requestInitialChatListResult = sendTdApiRequest(TdApi.GetChats(TdApi.ChatListMain(), Long.MAX_VALUE, 0, limit))
-//
-//        var lastId = 0L
-//        if (requestInitialChatListResult is TdApi.Chats) {
-//            var lastOrder = Long.MAX_VALUE
-//            lastId = requestInitialChatListResult.chatIds.last()
-//
-//            for (i: Long in requestInitialChatListResult.chatIds) {
-//
-//                val chatObject = sendTdApiRequest(TdApi.GetChat(i)) as TdApi.Chat
-//
-//                chatMap[i] = (ChatInfo(chatObject.title, convertTdChatType2ChatType(chatObject.type)))
-//
-//                if (i == lastId) {
-//                    lastOrder = chatObject.order
-//                }
-//            }
-//
-//            return RequestChatListResult.Ok(chatMap, NextChatListInfo(lastOrder, lastId))
-//        }
-//
-//        throw RuntimeException("requestInitialChatList() failed")
-//    }
-
     private suspend fun actualizeNetworkState() {
         sendTdApiRequestAsync(TdApi.TestNetwork())
         updatesChannel.receive() // TestNetwork will produce result to global handler
@@ -226,15 +179,15 @@ class TelegramChatRepositoryImpl @Inject constructor(
 
     override suspend fun requestChatList(nextInfo: NextChatListInfo?, limit: Int): RequestChatListResult {
 
-        actualizeNetworkState()
+        //actualizeNetworkState()
 
         if (!isConnected) {
-           // throw RuntimeException("Client is not connected")
+          //  throw RuntimeException("Client is not connected")
         }
 
         val chatList = mutableListOf<ChatInfo>()
 
-        val nextPageInfo = nextInfo?:NextChatListInfo(Long.MAX_VALUE, 0)
+        val nextPageInfo = nextInfo ?: NextChatListInfo(Long.MAX_VALUE, 0)
 
         val requestInitialChatListResult = sendTdApiRequest(TdApi.GetChats(TdApi.ChatListMain(), nextPageInfo.order, nextPageInfo.chatId, limit))
 
@@ -251,12 +204,14 @@ class TelegramChatRepositoryImpl @Inject constructor(
 
                 val chatObject = sendTdApiRequest(TdApi.GetChat(i)) as TdApi.Chat
 
-                chatList.add(ChatInfo(
-                    i,
-                    chatObject.title,
-                    convertTdChatType2ChatType(chatObject.type),
-                    chatObject.order,
-                ))
+                chatList.add(
+                    ChatInfo(
+                        i,
+                        chatObject.title,
+                        convertTdChatType2ChatType(chatObject.type),
+                        chatObject.order,
+                    )
+                )
 
                 if (i == lastId) {
                     lastOrder = chatObject.order
@@ -277,32 +232,27 @@ class TelegramChatRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun subscribeChatListUpdates(): Channel<UpdateChatListEvent> {
-        val chatListUpdatesChannel = Channel<UpdateChatListEvent>()
+    override fun subscribeChatListUpdates(): Flow<UpdateChatListEvent> {
+        return updatesChannel
+            .receiveAsFlow()
+            .mapNotNull { tdApiObject ->
+                if (tdApiObject is TdApi.UpdateChatLastMessage) {
 
-        val tdApiObject = updatesChannel.receive()
-
-        if (tdApiObject is TdApi.UpdateNewChat) {
-
-            chatListUpdatesChannel.send(
-                UpdateChatListEvent(
-                    //UpdateChatListEventType.ADDED,
-                    ChatInfo(
-                        tdApiObject.chat.id,
-                        tdApiObject.chat.title,
-                        convertTdChatType2ChatType(tdApiObject.chat.type),
-                        tdApiObject.chat.order,
+                    val chatObject = sendTdApiRequest(TdApi.GetChat(tdApiObject.chatId)) as TdApi.Chat
+                    UpdateChatListEvent(
+                        //UpdateChatListEventType.ADDED,
+                        ChatInfo(
+                            chatObject.id,
+                            chatObject.title,
+                            convertTdChatType2ChatType(chatObject.type),
+                            chatObject.order,
+                        )
                     )
-                )
-            )
-        }
+                } else {
+                    null
+                }
 
-        return chatListUpdatesChannel
-    }
-
-
-    protected fun finalize() {
-        coroutineContext.cancel()
+            }
     }
 
     companion object {

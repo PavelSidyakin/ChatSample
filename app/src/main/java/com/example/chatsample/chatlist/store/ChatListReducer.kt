@@ -10,6 +10,7 @@ class ChatListReducer : Reducer<ChatListStore.State, ChatListStateChanges> {
             is ChatListStateChanges.LoadingStarted -> copy(isLoading = true)
             is ChatListStateChanges.LoadingCompleted -> copy(isLoading = false)
             is ChatListStateChanges.RefreshStateChanged -> copy(isRefreshing = result.newRefreshState)
+            is ChatListStateChanges.RetryingStateChanged -> copy(isRetrying = result.newRetryingState)
         }
     }
 }

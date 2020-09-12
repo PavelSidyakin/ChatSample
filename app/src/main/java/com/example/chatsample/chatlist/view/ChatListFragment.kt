@@ -13,9 +13,11 @@ import com.example.chatsample.chatlist.controller.ChatListController
 import kotlinx.android.synthetic.main.chat_list_frament.chat_list_root_view
 
 class ChatListFragment : Fragment(){
+    private val instanceKeeperProvider by lazy { getInstanceKeeperProvider() }
+
     private val controller: ChatListController by lazy {
         ChatApplication.getAppComponent()
-            .chatListControllerFactory.create(lifecycle.asMviLifecycle(), getInstanceKeeperProvider())
+            .chatListControllerFactory.create(lifecycle.asMviLifecycle(), instanceKeeperProvider)
     }
 
     override fun onCreateView(
@@ -27,7 +29,7 @@ class ChatListFragment : Fragment(){
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-       controller.onViewCreated(ChatListViewImpl(chat_list_root_view, lifecycle, viewLifecycleOwner), lifecycle.asMviLifecycle())
+       controller.onViewCreated(ChatListViewImpl(chat_list_root_view, lifecycle, viewLifecycleOwner, instanceKeeperProvider), lifecycle.asMviLifecycle())
     }
 
     companion object {

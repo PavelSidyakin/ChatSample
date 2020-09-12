@@ -14,7 +14,6 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/error_text"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 </FrameLayout>

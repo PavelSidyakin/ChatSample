@@ -40,7 +40,7 @@ data class DbSubChatListRemoteKey(
 // ------------------------- Dao ---------------------------------
 @Dao
 interface ChatsDao {
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(chats: List<DbChatListItem>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

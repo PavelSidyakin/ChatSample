@@ -5,7 +5,6 @@ import com.arkivanov.mvikotlin.core.instancekeeper.InstanceKeeperProvider
 import com.arkivanov.mvikotlin.core.instancekeeper.get
 import com.arkivanov.mvikotlin.core.instancekeeper.getOrCreateStore
 import com.arkivanov.mvikotlin.core.lifecycle.Lifecycle
-import com.arkivanov.mvikotlin.core.lifecycle.doOnDestroy
 import com.arkivanov.mvikotlin.extensions.coroutines.bind
 import com.arkivanov.mvikotlin.extensions.coroutines.events
 import com.arkivanov.mvikotlin.extensions.coroutines.states
@@ -18,21 +17,12 @@ import kotlinx.coroutines.Dispatchers
 
 class ChatListControllerImpl @AssistedInject constructor(
     chatListStoreFactory: ChatListStoreFactory,
-    @Assisted private val lifecycle: Lifecycle,
     @Assisted private val instanceKeeperProvider: InstanceKeeperProvider
 ): ChatListController {
 
     private val chatListStore = instanceKeeperProvider.get<ChatListStore>().getOrCreateStore {
         chatListStoreFactory.create()
     }
-
-    init {
-//        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY, Dispatchers.Main) {
-//            //authStore.labels.map { it.toBusEvent() } bindTo { eventBus.send(it)}
-//        }
-        //lifecycle.doOnDestroy(chatListStore::dispose)
-    }
-
 
     override fun onViewCreated(chatListView: ChatListView, viewLifecycle: Lifecycle) {
         bind(

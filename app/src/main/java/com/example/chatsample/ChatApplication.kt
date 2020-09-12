@@ -1,10 +1,10 @@
 package com.example.chatsample
 
 import android.app.Application
+import com.example.chatsample.chatlist.store.ChatNetworkRepository
 import com.example.chatsample.data.ContextProvider
 import com.example.chatsample.di.AppComponent
 import com.example.chatsample.di.DaggerAppComponent
-import com.example.chatsample.chatlist.store.recycler.ChatNetworkRepository
 import javax.inject.Inject
 
 class ChatApplication : Application() {
@@ -23,9 +23,6 @@ class ChatApplication : Application() {
 
         appComponent.inject(this)
         contextProvider.appContext = this
-
-        chatNetworkRepository.init()
-
     }
 
     companion object {

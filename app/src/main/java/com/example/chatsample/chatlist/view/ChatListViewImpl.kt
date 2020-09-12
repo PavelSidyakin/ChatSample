@@ -3,17 +3,13 @@ package com.example.chatsample.chatlist.view
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.paging.LoadState
-import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingData
-import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.arkivanov.mvikotlin.core.utils.diff
 import com.arkivanov.mvikotlin.core.view.BaseMviView
 import com.arkivanov.mvikotlin.core.view.ViewRenderer
 import com.example.chatsample.chatlist.store.ChatListStore
-import com.example.chatsample.chatlist.view.recycler.ChatListAdapter
 import com.example.chatsample.chatlist.view.recycler.ChatListClickListeners
 import com.example.chatsample.chatlist.view.recycler.ChatListDelegationAdapter
 import com.example.chatsample.chatlist.view.recycler.ChatListItem
@@ -24,7 +20,6 @@ import kotlinx.android.synthetic.main.chat_list_frament.view.chat_list_swipe_ref
 class ChatListViewImpl(
     private val rootView: View,
     private val lifecycle: Lifecycle,
-    private val viewLifecycleOwner: LifecycleOwner
 ): BaseMviView<ChatListStore.State, ChatListStore.Intent>(), ChatListView {
 
     private val chatListClickListeners = object : ChatListClickListeners {
@@ -48,49 +43,24 @@ class ChatListViewImpl(
         with(rootView) {
             rootView.chat_list_list.adapter = chatListAdapter
                 .withLoadStateFooter(ChatListLoadStateAdapter(
-                retry = {
-
-                }
-            ))
-
-                //.withLoadingFooter(ChatListLoadStateAdapter(chatListAdapter::retry))
-            //rootView.chat_list_list.adapter = chatListAdapter.withLoadStateFooter(ChatListLoadStateAdapter(chatListAdapter::retry))
-//            chatListAdapter.addLoadStateListener { loadStates ->
-//                footer.loadState = when (loadStates.refresh) {
-//                    is LoadState.NotLoading -> loadStates.append
-//                    else -> loadStates.refresh
-//                }
-//            }
+                    retry = {
+                        dispatch(ChatListStore.Intent.Retry())
+                    }
+                ))
 
             rootView.chat_list_swipe_refresh.setOnRefreshListener { dispatch(ChatListStore.Intent.Refresh()) }
         }
-    }
 
-    private fun ChatListAdapter.withLoadingFooter(
-        footer: LoadStateAdapter<*>
-    ): ConcatAdapter {
-        addLoadStateListener { loadStates ->
-            Log.i("LoadState", "append: ${loadStates.append}")
-            Log.i("LoadState", "refresh: ${loadStates.refresh}")
-
-            if (loadStates.refresh is LoadState.Loading) {
-                footer.loadState = LoadState.Loading
-            } else {
-                footer.loadState = loadStates.append
+        chatListAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                Log.i(TAG, "ChatListViewImpl.onItemRangeChanged(): positionStart = $positionStart, itemCount = $itemCount")
+                val pos = (rootView.chat_list_list.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
+                Log.i(TAG, "ChatListViewImpl current pos: ${pos}" )
+                pos?.let { position ->
+                    rootView.chat_list_list.scrollToPosition(pos)
+                }
             }
-
-//            footer.loadState = when (loadStates.refresh) {
-//                is LoadState.NotLoading -> LoadState.Loading
-//                else -> {
-//                    if (loadStates.append.endOfPaginationReached) {
-//                        LoadState.NotLoading(true)
-//                    } else {
-//                        loadStates.append
-//                    }
-//                }
-//            }
-        }
-        return ConcatAdapter(this, footer)
+        })
     }
 
     override val renderer: ViewRenderer<ChatListStore.State> = diff {
@@ -98,7 +68,7 @@ class ChatListViewImpl(
             pagingData?.let { pagingData: PagingData<ChatListItem> ->
                 chatListAdapter.submitData(lifecycle, pagingData)
             }
-        }, compare = {_,_ -> false })
+        }, compare = { _, _ -> false })
 
         diff(get = ChatListStore.State::isRefreshing, set = { refreshing ->
             rootView.chat_list_swipe_refresh.isRefreshing = refreshing
@@ -107,6 +77,15 @@ class ChatListViewImpl(
             }
         })
 
+        diff(get = ChatListStore.State::isRetrying, set = { retrying ->
+            if (retrying) {
+                chatListAdapter.retry()
+            }
+        })
+    }
+
+    companion object {
+        private const val TAG = "ChatListView"
     }
 
 }

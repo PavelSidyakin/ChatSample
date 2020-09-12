@@ -25,19 +25,14 @@ data class UpdateChatListEvent(
     val chatInfo: ChatInfo
 )
 
-//enum class UpdateChatListEventType {
-//    ADDED,
-//    REMOVED,
-//    UPDATED,
-//}
-
 enum class ChatType(val id: Int) {
     DIRECT(1),
     GROUP(2),
     ;
+
     companion object {
         fun byId(id: Int): ChatType {
-            return values().find { it.id == id }?:throw RuntimeException("Wrong type id: $id")
+            return values().find { it.id == id } ?: throw RuntimeException("Wrong type id: $id")
         }
     }
 

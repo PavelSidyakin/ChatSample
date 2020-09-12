@@ -8,5 +8,6 @@ sealed class ChatListItem {
     }
 
     class Loading : ChatListItem()
+    class Error : ChatListItem()
 
 }

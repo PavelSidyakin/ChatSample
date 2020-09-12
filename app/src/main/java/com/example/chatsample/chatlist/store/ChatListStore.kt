@@ -8,16 +8,17 @@ interface ChatListStore : Store<ChatListStore.Intent, ChatListStore.State, ChatL
 
     sealed class Intent {
         class Refresh: Intent()
+        class Retry: Intent()
     }
 
     data class State(
         val isLoading: Boolean = false,
         val isRefreshing: Boolean = false,
+        val isRetrying: Boolean = false,
         val pagingData: PagingData<ChatListItem>? = null,
         val error: Throwable? = null
     )
 
     sealed class Label {
-        data class Dispatched(val id: String) : Label()
     }
 }
