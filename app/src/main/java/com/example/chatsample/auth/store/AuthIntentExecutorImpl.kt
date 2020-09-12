@@ -1,13 +1,12 @@
 package com.example.chatsample.auth.store
 
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.example.chatsample.chatlist.store.ChatNetworkRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AuthIntentExecutorImpl @Inject constructor(
-    private val chatNetworkRepository: ChatNetworkRepository
+    private val authRepository: AuthRepository
 ) : SuspendExecutor<AuthStore.Intent, Unit, AuthStore.State, AuthStateChanges, AuthStore.Label>(
         mainContext = Dispatchers.Main
 ), AuthIntentExecutor {
@@ -32,7 +31,7 @@ class AuthIntentExecutorImpl @Inject constructor(
     private suspend fun handleSendCode(code: String) {
         try {
             val result = withContext(Dispatchers.IO) {
-                    return@withContext chatNetworkRepository.continueWithCode(code)
+                    return@withContext authRepository.continueWithCode(code)
                 }
             dispatch(AuthStateChanges.AuthenticationResult(result))
         } catch (throwable: Throwable) {
@@ -44,7 +43,7 @@ class AuthIntentExecutorImpl @Inject constructor(
         try {
             val result =
                 withContext(Dispatchers.IO) {
-                    return@withContext chatNetworkRepository.authenticate(phoneNumber)
+                    return@withContext authRepository.authenticate(phoneNumber)
                 }
             dispatch(AuthStateChanges.AuthenticationResult(result))
         } catch (throwable: Throwable) {

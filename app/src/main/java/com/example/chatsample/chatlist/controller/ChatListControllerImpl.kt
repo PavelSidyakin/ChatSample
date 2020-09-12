@@ -44,7 +44,6 @@ class ChatListControllerImpl @AssistedInject constructor(
     @AssistedInject.Factory
     interface Factory {
         fun create(
-            lifecycle: Lifecycle,
             instanceKeeperProvider: InstanceKeeperProvider
         ): ChatListControllerImpl
     }

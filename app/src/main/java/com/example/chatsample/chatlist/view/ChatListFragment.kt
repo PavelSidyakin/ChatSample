@@ -17,7 +17,7 @@ class ChatListFragment : Fragment(){
 
     private val controller: ChatListController by lazy {
         ChatApplication.getAppComponent()
-            .chatListControllerFactory.create(lifecycle.asMviLifecycle(), instanceKeeperProvider)
+            .chatListControllerFactory.create(instanceKeeperProvider)
     }
 
     override fun onCreateView(
@@ -29,7 +29,7 @@ class ChatListFragment : Fragment(){
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-       controller.onViewCreated(ChatListViewImpl(chat_list_root_view, lifecycle, viewLifecycleOwner, instanceKeeperProvider), lifecycle.asMviLifecycle())
+       controller.onViewCreated(ChatListViewImpl(chat_list_root_view, lifecycle), lifecycle.asMviLifecycle())
     }
 
     companion object {

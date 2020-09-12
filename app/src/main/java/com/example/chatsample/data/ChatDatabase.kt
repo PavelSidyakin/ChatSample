@@ -12,6 +12,9 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
+import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType
 
 // ------------------------- Entities ---------------------------------
@@ -64,7 +67,6 @@ interface SubChatListRemoteKeyDao {
     @Query("DELETE FROM chats_remote_key")
     suspend fun deleteRemoteKey()
 }
-
 // ------------------------- Database ---------------------------------
 @Database(
     entities = [DbChatListItem::class, DbSubChatListRemoteKey::class],

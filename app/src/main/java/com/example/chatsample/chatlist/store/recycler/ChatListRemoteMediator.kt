@@ -7,7 +7,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.example.chatsample.chatlist.store.ChatNetworkRepository
+import com.example.chatsample.chatlist.store.ChatListDbRepository
+import com.example.chatsample.chatlist.store.ChatListRemoteRepository
 import com.example.chatsample.data.ChatDb
 import com.example.chatsample.data.DbChatListItem
 import com.example.chatsample.data.DbSubChatListRemoteKey
@@ -26,22 +27,19 @@ import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalPagingApi
 class ChatListRemoteMediator(
-    private val db: ChatDb,
-    private val chatNetworkRepository: ChatNetworkRepository,
-    private val pageListConfig: PagingConfig
+    private val chatListDbRepository: ChatListDbRepository,
+    private val chatListRemoteRepository: ChatListRemoteRepository,
+    private val pageListConfig: PagingConfig,
 ) : RemoteMediator<Int, DbChatListItem>() {
-    private val chatsDao = db.chats()
-    private val subChatListRemoteKeyDao = db.subChatListRemoteKey()
-
     private val monitorJob = Job() + Dispatchers.IO
 
     override suspend fun initialize(): InitializeAction  = coroutineScope {
 
         async(monitorJob) {
-            chatNetworkRepository.subscribeChatListUpdates()
+            chatListRemoteRepository.subscribeChatListUpdates()
                 .collectLatest { updateChatListEvent: UpdateChatListEvent ->
                     // To refresh the list immediately
-                    chatsDao.insertChat(updateChatListEvent.chatInfo.toDbChatListItem())
+                    chatListDbRepository.insertChat(updateChatListEvent.chatInfo)
 
                     // Next page tokens will be invalid. Refresh the list
                     updateFromNetwork(LoadType.REFRESH, null)
@@ -62,15 +60,13 @@ class ChatListRemoteMediator(
                     // We don't need pagination at the top of the list
                     return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    val remoteKey = db.withTransaction {
-                        subChatListRemoteKeyDao.remoteKey()
-                    }
+                    val remoteKey = chatListDbRepository.getNextRemoteKey()
 
-                    if (remoteKey == null || remoteKey.nextChatToken.isEmpty()) {
+                    if (remoteKey == null || remoteKey.isEmpty()) {
                         return MediatorResult.Success(endOfPaginationReached = true)
                     }
 
-                    loadKey = parseString(remoteKey.nextChatToken) as NextChatListInfo?
+                    loadKey = parseString(remoteKey) as NextChatListInfo?
                 }
             }
 
@@ -83,7 +79,7 @@ class ChatListRemoteMediator(
     }
 
     private suspend fun updateFromNetwork(loadType: LoadType, loadKey: NextChatListInfo?): MediatorResult {
-        val networkChatListResult = chatNetworkRepository.requestChatList(
+        val networkChatListResult = chatListRemoteRepository.requestChatList(
             nextInfo = loadKey,
             limit = when (loadType) {
                 LoadType.REFRESH -> pageListConfig.initialLoadSize
@@ -93,17 +89,17 @@ class ChatListRemoteMediator(
         delay(1000)
 
         if (networkChatListResult is RequestChatListResult.Ok) {
-            db.withTransaction {
+            chatListDbRepository.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    chatsDao.deleteAllChats()
+                    chatListDbRepository.deleteAllChats()
                 }
 
                 val nextStringToken = serializeToString(networkChatListResult.nextChatListInfo)
 
-                subChatListRemoteKeyDao.deleteRemoteKey()
-                subChatListRemoteKeyDao.insert(DbSubChatListRemoteKey(nextStringToken ?: ""))
+                chatListDbRepository.deleteRemoteKey()
+                chatListDbRepository.setNextRemoteKey(nextStringToken ?: "")
 
-                chatsDao.insertAll(networkChatListResult.chats.map { it.toDbChatListItem() })
+                chatListDbRepository.insertAll(networkChatListResult.chats)
             }
 
             return MediatorResult.Success(endOfPaginationReached = networkChatListResult.chats.isEmpty())
@@ -113,15 +109,6 @@ class ChatListRemoteMediator(
             return MediatorResult.Error(RuntimeException("Unexpected chat list request result"))
         }
 
-    }
-
-    private fun ChatInfo.toDbChatListItem(): DbChatListItem {
-        return DbChatListItem(
-            chatId = this.chatId,
-            chatOrder = this.chatOrder,
-            chatName = this.chatName,
-            chatType = this.chatType.id
-        )
     }
 
     companion object {

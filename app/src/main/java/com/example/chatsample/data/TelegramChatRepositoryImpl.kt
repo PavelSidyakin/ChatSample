@@ -3,7 +3,8 @@ package com.example.chatsample.data
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import com.example.chatsample.chatlist.store.ChatNetworkRepository
+import com.example.chatsample.auth.store.AuthRepository
+import com.example.chatsample.chatlist.store.ChatListRemoteRepository
 import com.example.chatsample.model.AuthResult
 import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType
@@ -18,13 +19,15 @@ import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
 import org.drinkless.td.libcore.telegram.TdApi.ConnectionStateReady
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+@Singleton
 class TelegramChatRepositoryImpl @Inject constructor(
     private val contextProvider: ContextProvider
-) : ChatNetworkRepository {
+) : ChatListRemoteRepository, AuthRepository {
 
     private var client: Client? = null
 

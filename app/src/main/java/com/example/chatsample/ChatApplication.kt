@@ -1,7 +1,7 @@
 package com.example.chatsample
 
 import android.app.Application
-import com.example.chatsample.chatlist.store.ChatNetworkRepository
+import com.example.chatsample.chatlist.store.ChatListRemoteRepository
 import com.example.chatsample.data.ContextProvider
 import com.example.chatsample.di.AppComponent
 import com.example.chatsample.di.DaggerAppComponent
@@ -13,7 +13,7 @@ class ChatApplication : Application() {
     lateinit var contextProvider: ContextProvider
 
     @Inject
-    lateinit var chatNetworkRepository: ChatNetworkRepository
+    lateinit var chatListRemoteRepository: ChatListRemoteRepository
 
     override fun onCreate() {
         super.onCreate()
