@@ -2,13 +2,13 @@ package com.example.chatsample.auth.store
 
 import com.arkivanov.mvikotlin.core.store.Store
 
-interface AuthStore: Store<AuthStore.Intent, AuthStore.State, AuthStore.Label> {
+interface AuthStore : Store<AuthStore.Intent, AuthStore.State, AuthStore.Label> {
 
     sealed class Intent {
-        data class TypingPhoneNumber(val phoneNumber: String): Intent()
-        data class TypingCode(val code: String): Intent()
-        data class SendPhoneNumber(val phoneNumber: String): Intent()
-        data class SendCode(val code: String): Intent()
+        data class TypingPhoneNumber(val phoneNumber: String) : Intent()
+        data class TypingCode(val code: String) : Intent()
+        data class SendPhoneNumber(val phoneNumber: String) : Intent()
+        data class SendCode(val code: String) : Intent()
     }
 
     data class State(
@@ -21,6 +21,5 @@ interface AuthStore: Store<AuthStore.Intent, AuthStore.State, AuthStore.Label> {
     )
 
     sealed class Label {
-        data class Dispatched(val id: String) : Label()
     }
 }

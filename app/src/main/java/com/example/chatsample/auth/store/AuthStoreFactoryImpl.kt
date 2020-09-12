@@ -9,7 +9,7 @@ import javax.inject.Inject
 class AuthStoreFactoryImpl @Inject constructor(
     private val storeFactory: StoreFactory,
     private val authIntentExecutor: AuthIntentExecutor
-): AuthStoreFactory {
+) : AuthStoreFactory {
 
     override fun create(): AuthStore =
         object : AuthStore, Store<AuthStore.Intent, AuthStore.State, AuthStore.Label>

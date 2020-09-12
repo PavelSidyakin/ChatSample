@@ -27,12 +27,8 @@ class AuthControllerImpl @AssistedInject constructor(
     }
 
     init {
-//        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY, Dispatchers.Main) {
-//            //authStore.labels.map { it.toBusEvent() } bindTo { eventBus.send(it)}
-//        }
         lifecycle.doOnDestroy(authStore::dispose)
     }
-
 
     override fun onViewCreated(authView: AuthView, viewLifecycle: Lifecycle) {
         bind(

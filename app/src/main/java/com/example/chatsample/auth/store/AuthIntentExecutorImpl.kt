@@ -50,7 +50,5 @@ class AuthIntentExecutorImpl @Inject constructor(
         } catch (throwable: Throwable) {
             dispatch(AuthStateChanges.Error(throwable))
         }
-
-        //publish(AuthStore.Label.Dispatched(result.id.toString())) // WTF ??
     }
 }
