@@ -7,7 +7,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.example.chatsample.chatlist.view.recycler.ChatListItem
 import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType
-import com.example.chatsample.repository.ChatDataSource
+import com.example.chatsample.chatlist.store.recycler.ChatDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest

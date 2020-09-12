@@ -1,21 +1,16 @@
-package com.example.chatsample.data
+package com.example.chatsample.chatlist.store.recycler
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.map
 import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType
-import com.example.chatsample.repository.ChatDataSource
-import com.example.chatsample.repository.ChatNetworkRepository
+import com.example.chatsample.data.ChatDb
+import com.example.chatsample.data.DbChatListItem
 import dagger.Lazy
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.transform
 import javax.inject.Inject
 
 class ChatDataSourceImpl @Inject constructor(

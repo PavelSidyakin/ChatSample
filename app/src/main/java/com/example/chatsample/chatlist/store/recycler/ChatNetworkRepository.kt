@@ -1,4 +1,4 @@
-package com.example.chatsample.repository
+package com.example.chatsample.chatlist.store.recycler
 
 import com.example.chatsample.model.AuthResult
 import com.example.chatsample.model.NextChatListInfo

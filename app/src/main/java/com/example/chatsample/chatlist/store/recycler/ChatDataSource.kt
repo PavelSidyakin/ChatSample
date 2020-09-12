@@ -1,4 +1,4 @@
-package com.example.chatsample.repository
+package com.example.chatsample.chatlist.store.recycler
 
 import androidx.paging.PagingData
 import com.example.chatsample.model.ChatInfo

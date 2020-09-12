@@ -1,4 +1,4 @@
-package com.example.chatsample.data
+package com.example.chatsample.chatlist.store.recycler
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -7,7 +7,9 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.example.chatsample.model.NextChatListInfo
 import com.example.chatsample.model.RequestChatListResult
-import com.example.chatsample.repository.ChatNetworkRepository
+import com.example.chatsample.data.ChatDb
+import com.example.chatsample.data.DbChatListItem
+import com.example.chatsample.data.DbSubChatListRemoteKey
 import com.example.chatsample.utils.parseString
 import com.example.chatsample.utils.serializeToString
 import kotlinx.coroutines.delay
