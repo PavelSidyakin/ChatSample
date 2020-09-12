@@ -11,12 +11,12 @@ import com.example.chatsample.chatlist.store.ChatListIntentExecutorImpl
 import com.example.chatsample.chatlist.store.ChatListStoreFactory
 import com.example.chatsample.chatlist.store.ChatListStoreFactoryImpl
 import com.example.chatsample.data.ChatDb
-import com.example.chatsample.data.ChatDataSourceImpl
+import com.example.chatsample.chatlist.store.recycler.ChatDataSourceImpl
 import com.example.chatsample.data.ContextProvider
 import com.example.chatsample.data.ContextProviderImpl
 import com.example.chatsample.data.TelegramChatRepositoryImpl
-import com.example.chatsample.repository.ChatNetworkRepository
-import com.example.chatsample.repository.ChatDataSource
+import com.example.chatsample.chatlist.store.recycler.ChatNetworkRepository
+import com.example.chatsample.chatlist.store.recycler.ChatDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

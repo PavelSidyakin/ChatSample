@@ -3,7 +3,7 @@ package com.example.chatsample.data
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import com.example.chatsample.repository.ChatNetworkRepository
+import com.example.chatsample.chatlist.store.recycler.ChatNetworkRepository
 import com.example.chatsample.model.AuthResult
 import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType
@@ -16,7 +16,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
 import org.drinkless.td.libcore.telegram.TdApi.ConnectionStateReady
