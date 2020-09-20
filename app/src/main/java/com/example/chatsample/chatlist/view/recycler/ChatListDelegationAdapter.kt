@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.DiffUtil
 import com.example.chatsample.chatlist.view.recycler.delegates.directChatAdapterDelegate
 import com.example.chatsample.chatlist.view.recycler.delegates.fallbackAdapterDelegate
 import com.example.chatsample.chatlist.view.recycler.delegates.groupChatAdapterDelegate
-import com.example.chatsample.chatlist.view.recycler.delegates.loadingAdapterDelegate
 import com.example.chatsample.chatlist.view.recycler.delegates.placeHolderAdapterDelegate
 import com.hannesdorfmann.adapterdelegates4.paging3.PagingDelegationAdapter
 
@@ -12,7 +11,6 @@ class ChatListDelegationAdapter(clickListeners: ChatListClickListeners) : Paging
     placeHolderAdapterDelegate(),
     directChatAdapterDelegate(clickListeners.directChatItemClickedListener),
     groupChatAdapterDelegate(clickListeners.groupChatItemClickedListener),
-    loadingAdapterDelegate(clickListeners.loadingItemClickListener),
 ) {
     init {
         delegatesManager.fallbackDelegate = fallbackAdapterDelegate()

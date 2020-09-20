@@ -34,12 +34,10 @@ class ChatListIntentExecutorImpl @Inject constructor(
     }
 
     private suspend fun handleActionLoadList() = coroutineScope {
-        dispatch(ChatListStateChanges.ListChanged(PagingData.from(listOf(ChatListItem.Loading()))))
-
         chatDataSource.observeChatList()
             .map { pagingData -> pagingData.map { convertChatInfo2ChatListItem(it) } }
             .cachedIn(this)
-            .collectLatest { pagingData ->
+            .collectLatest { pagingData: PagingData<ChatListItem> ->
                 dispatch(ChatListStateChanges.ListChanged(pagingData))
                 dispatch(ChatListStateChanges.RefreshStateChanged(false))
             }

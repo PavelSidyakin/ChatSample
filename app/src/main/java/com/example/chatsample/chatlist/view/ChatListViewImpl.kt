@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.chat_list_frament.view.chat_list_swipe_ref
 class ChatListViewImpl(
     private val rootView: View,
     private val lifecycle: Lifecycle,
-): BaseMviView<ChatListStore.State, ChatListStore.Intent>(), ChatListView {
+) : BaseMviView<ChatListStore.State, ChatListStore.Intent>(), ChatListView {
 
     private val chatListClickListeners = object : ChatListClickListeners {
         override val loadingItemClickListener: () -> Unit = {
@@ -42,11 +42,17 @@ class ChatListViewImpl(
     init {
         with(rootView) {
             rootView.chat_list_list.adapter = chatListAdapter
-                .withLoadStateFooter(ChatListLoadStateAdapter(
-                    retry = {
-                        dispatch(ChatListStore.Intent.Retry())
-                    }
-                ))
+                .withLoadStateHeaderAndFooter(
+                    ChatListLoadStateAdapter(
+                        retry = {
+                            dispatch(ChatListStore.Intent.Retry())
+                        }
+                    ),
+                    ChatListLoadStateAdapter(
+                        retry = {
+                            dispatch(ChatListStore.Intent.Retry())
+                        }
+                    ))
 
             rootView.chat_list_swipe_refresh.setOnRefreshListener { dispatch(ChatListStore.Intent.Refresh()) }
         }
@@ -55,7 +61,7 @@ class ChatListViewImpl(
             override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
                 Log.i(TAG, "ChatListViewImpl.onItemRangeChanged(): positionStart = $positionStart, itemCount = $itemCount")
                 val pos = (rootView.chat_list_list.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
-                Log.i(TAG, "ChatListViewImpl current pos: ${pos}" )
+                Log.i(TAG, "ChatListViewImpl current pos: ${pos}")
                 pos?.let { position ->
                     rootView.chat_list_list.scrollToPosition(pos)
                 }
