@@ -10,6 +10,8 @@ import com.example.chatsample.R
 import kotlinx.android.synthetic.main.load_state_list_item.view.loading_item_error_text
 import kotlinx.android.synthetic.main.load_state_list_item.view.loading_item_progress
 
+// It's impossible to add loading item as item in the list to use a delegate.
+// Use this solution as suggested by paging library 3.
 class LoadStateViewHolder(
     parent: ViewGroup,
     private val retry: () -> Unit
@@ -24,9 +26,6 @@ class LoadStateViewHolder(
     }
 }
 
-// Use separate adapter because paging library doesn't add footer item.
-// https://issuetracker.google.com/issues/168295631
-// TODO: if the issue be fixed, remove the adapter and add loading item as data item.
 class ChatListLoadStateAdapter(
     private val retry: () -> Unit
 ) : LoadStateAdapter<LoadStateViewHolder>() {
