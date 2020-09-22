@@ -16,6 +16,7 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType
+import kotlinx.coroutines.flow.Flow
 
 // ------------------------- Entities ---------------------------------
 @Entity(tableName = "chats")
@@ -51,6 +52,12 @@ interface ChatsDao {
 
     @Query("SELECT * FROM chats ORDER BY f_chat_order DESC")
     fun selectAllChats(): PagingSource<Int, DbChatListItem>
+
+    @Query("SELECT * FROM chats ORDER BY f_chat_order DESC")
+    fun selectAllChatsFlow(): Flow<List<DbChatListItem>>
+
+    @Query("SELECT * FROM chats ORDER BY f_chat_order DESC")
+    suspend fun selectAllChatsList(): List<DbChatListItem>
 
     @Query("DELETE FROM chats")
     suspend fun deleteAllChats()

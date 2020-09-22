@@ -34,15 +34,15 @@ class ChatDataSourceImpl @Inject constructor(
             remoteMediator = ChatListRemoteMediator(chatListDbRepository, chatListRemoteRepository, pageListConfig)
         )
             .flow
-            .map { pagingData ->
-                pagingData.mapSync { chatListItem: DbChatListItem ->
-                    ChatInfo(
-                        chatId = chatListItem.chatId,
-                        chatName = chatListItem.chatName,
-                        chatType = ChatType.byId(chatListItem.chatType),
-                        chatOrder = chatListItem.chatOrder
-                    )
-                }
-            }
+//            .map { pagingData ->
+//                pagingData.mapSync { chatListItem: DbChatListItem ->
+//                    ChatInfo(
+//                        chatId = chatListItem.chatId,
+//                        chatName = chatListItem.chatName,
+//                        chatType = ChatType.byId(chatListItem.chatType),
+//                        chatOrder = chatListItem.chatOrder
+//                    )
+//                }
+//            }
     }
 }

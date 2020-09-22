@@ -9,6 +9,7 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.example.chatsample.chatlist.store.ChatListDbRepository
 import com.example.chatsample.chatlist.store.ChatListRemoteRepository
+import com.example.chatsample.chatlist.view.recycler.ChatListItem
 import com.example.chatsample.data.ChatDb
 import com.example.chatsample.data.DbChatListItem
 import com.example.chatsample.data.DbSubChatListRemoteKey
@@ -30,7 +31,7 @@ class ChatListRemoteMediator(
     private val chatListDbRepository: ChatListDbRepository,
     private val chatListRemoteRepository: ChatListRemoteRepository,
     private val pageListConfig: PagingConfig,
-) : RemoteMediator<Int, DbChatListItem>() {
+) : RemoteMediator<Int, ChatInfo>() {
     private val monitorJob = Job() + Dispatchers.IO
 
     override suspend fun initialize(): InitializeAction  = coroutineScope {
@@ -49,7 +50,7 @@ class ChatListRemoteMediator(
         return@coroutineScope super.initialize()
     }
 
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, DbChatListItem>): MediatorResult {
+    override suspend fun load(loadType: LoadType, state: PagingState<Int, ChatInfo>): MediatorResult {
         try {
             var loadKey: NextChatListInfo? = null
 
