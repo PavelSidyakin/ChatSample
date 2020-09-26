@@ -4,7 +4,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
-import com.example.chatsample.chatlist.store.recycler.ChatDataSource
+import com.example.chatsample.chatlist.store.recycler.ChatListDataSource
 import com.example.chatsample.chatlist.view.recycler.ChatListItem
 import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ChatListIntentExecutorImpl @Inject constructor(
-    private val chatDataSource: ChatDataSource
+    private val chatListDataSource: ChatListDataSource
 ) : SuspendExecutor<ChatListStore.Intent, ChatListBootstrapper.Action, ChatListStore.State, ChatListStateChanges, ChatListStore.Label>(
     mainContext = Dispatchers.Main
 ), ChatListIntentExecutor {
@@ -34,7 +34,7 @@ class ChatListIntentExecutorImpl @Inject constructor(
     }
 
     private suspend fun handleActionLoadList() = coroutineScope {
-        chatDataSource.observeChatList()
+        chatListDataSource.observeChatList()
             .map { pagingData -> pagingData.map { convertChatInfo2ChatListItem(it) } }
             .cachedIn(this)
             .collectLatest { pagingData: PagingData<ChatListItem> ->

@@ -1,0 +1,24 @@
+package com.example.chatsample.chat.store
+
+import androidx.paging.PagingData
+import com.arkivanov.mvikotlin.core.store.Store
+import com.example.chatsample.chat.view.recycler.MessageItem
+
+interface ChatStore : Store<ChatStore.Intent, ChatStore.State, ChatStore.Label> {
+
+    sealed class Intent {
+        class Refresh: Intent()
+        class Retry: Intent()
+    }
+
+    data class State(
+        val isLoading: Boolean = false,
+        val isRefreshing: Boolean = false,
+        val isRetrying: Boolean = false,
+        val pagingData: PagingData<MessageItem>? = null,
+        val error: Throwable? = null
+    )
+
+    sealed class Label {
+    }
+}

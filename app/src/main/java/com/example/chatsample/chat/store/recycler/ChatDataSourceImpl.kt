@@ -1,19 +1,20 @@
-package com.example.chatsample.chatlist.store.recycler
+package com.example.chatsample.chat.store.recycler
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.example.chatsample.chatlist.store.data.ChatListDbRepository
-import com.example.chatsample.chatlist.store.data.ChatListRemoteRepository
+import com.example.chatsample.chat.store.data.ChatDbRepository
+import com.example.chatsample.chat.store.data.ChatRemoteRepository
+import com.example.chatsample.chatlist.store.recycler.ChatListDataSource
 import com.example.chatsample.model.ChatInfo
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ChatDataSourceImpl @Inject constructor(
-    private val chatListRemoteRepository: ChatListRemoteRepository,
-    private val chatListDbRepository: ChatListDbRepository,
-) : ChatDataSource {
+    private val chatRemoteRepository: ChatRemoteRepository,
+    private val chatDbRepository: ChatDbRepository,
+) : ChatListDataSource {
 
     private val pageListConfig =
         PagingConfig(
@@ -25,8 +26,8 @@ class ChatDataSourceImpl @Inject constructor(
     override fun observeChatList(): Flow<PagingData<ChatInfo>> {
         return Pager(
             config = pageListConfig,
-            pagingSourceFactory = { chatListDbRepository.getAllChats() },
-            remoteMediator = ChatListRemoteMediator(chatListDbRepository, chatListRemoteRepository, pageListConfig)
+            pagingSourceFactory = { chatDbRepository.getAllChats() },
+            remoteMediator = ChatRemoteMediator(chatDbRepository, chatRemoteRepository, pageListConfig)
         )
             .flow
     }

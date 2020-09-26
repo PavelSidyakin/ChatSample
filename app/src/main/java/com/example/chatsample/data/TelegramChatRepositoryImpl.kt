@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import com.example.chatsample.auth.store.AuthRepository
+import com.example.chatsample.chat.store.data.ChatRemoteRepository
 import com.example.chatsample.chatlist.store.data.ChatListRemoteRepository
 import com.example.chatsample.model.AuthResult
 import com.example.chatsample.model.ChatInfo
@@ -27,7 +28,7 @@ import kotlin.coroutines.suspendCoroutine
 @Singleton
 class TelegramChatRepositoryImpl @Inject constructor(
     private val contextProvider: ContextProvider
-) : ChatListRemoteRepository, AuthRepository {
+) : ChatRemoteRepository, ChatListRemoteRepository, AuthRepository {
 
     private var client: Client? = null
 
