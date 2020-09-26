@@ -12,9 +12,6 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
-import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType
 import kotlinx.coroutines.flow.Flow
 

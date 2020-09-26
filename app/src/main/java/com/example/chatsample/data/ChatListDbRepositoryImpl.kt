@@ -1,20 +1,16 @@
 package com.example.chatsample.data
 
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource
 import androidx.room.withTransaction
 import com.example.chatsample.chatlist.store.ChatListDbRepository
-import com.example.chatsample.chatlist.view.recycler.ChatListItem
 import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType
 import com.example.chatsample.utils.mapValue
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ChatListDbRepositoryImpl @Inject constructor(
     private val chatDb: ChatDb
-): ChatListDbRepository {
+) : ChatListDbRepository {
 
     private val chatsDao by lazy { chatDb.chats() }
     private val subChatListRemoteKeyDao by lazy { chatDb.subChatListRemoteKey() }
@@ -35,36 +31,9 @@ class ChatListDbRepositoryImpl @Inject constructor(
 
     override fun getAllChats(): PagingSource<Int, ChatInfo> {
         return chatsDao.selectAllChats().mapValue(
-                { dbChatListItem ->
-                    ChatInfo(dbChatListItem.chatId, dbChatListItem.chatName,
-                        ChatType.byId(dbChatListItem.chatType),
-                        dbChatListItem.chatOrder)
-                },
-                { chatInfo ->
-                    chatInfo.toDbChatListItem()
-                }
-            )
-//        return object : PagingSource<Int, ChatInfo>() {
-//            override suspend fun load(
-//                params: LoadParams<Int>
-//            ): LoadResult<Int, ChatInfo> {
-//                return try {
-//                    // Start refresh at page 1 if undefined.
-//                    val nextPageNumber = params.key ?: 1
-//                    val response = chatsDao.selectAllChatsList()
-//
-//                    LoadResult.Page(
-//                        data = response.map { it.toChatInfo() },
-//                        prevKey = null,
-//                        nextKey = nextPageNumber + 1 //subChatListRemoteKeyDao.remoteKey().nextChatToken.isBlank()
-//                    )
-//                } catch (e: Exception) {
-//                    // Handle errors in this block and return LoadResult.Error if it is an
-//                    // expected error (such as a network failure).
-//                    LoadResult.Error(e)
-//                }
-//            }
-//        }
+            { dbChatListItem -> dbChatListItem.toChatInfo() },
+            { chatInfo -> chatInfo.toDbChatListItem() }
+        )
     }
 
     override suspend fun deleteAllChats() {

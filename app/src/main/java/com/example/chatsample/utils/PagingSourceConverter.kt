@@ -48,24 +48,22 @@ private class NewPagingSource<Key : Any, Value : Any, NewValue: Any>(
 
     @ExperimentalPagingApi
     override fun getRefreshKey(state: PagingState<Key, NewValue>): Key? {
-        return state.anchorPosition as Key
-
-//        return dataSource.getRefreshKey(
-//            PagingState(
-//                pages = state.pages.map { loadResult ->
-//                    LoadResult.Page<Key, Value>(
-//                        loadResult.data.map { converterNewToOld(it) },
-//                        loadResult.prevKey,
-//                        loadResult.nextKey,
-//                        loadResult.itemsBefore,
-//                        loadResult.itemsAfter
-//                    )
-//                },
-//                anchorPosition = state.anchorPosition,
-//                config = state.config,
-//                leadingPlaceholderCount = 0
-//            )
-//        )
+        return dataSource.getRefreshKey(
+            PagingState(
+                pages = state.pages.map { loadResult ->
+                    LoadResult.Page<Key, Value>(
+                        loadResult.data.map { converterNewToOld(it) },
+                        loadResult.prevKey,
+                        loadResult.nextKey,
+                        loadResult.itemsBefore,
+                        loadResult.itemsAfter
+                    )
+                },
+                anchorPosition = state.anchorPosition,
+                config = state.config,
+                leadingPlaceholderCount = 0
+            )
+        )
     }
 
     override val jumpingSupported: Boolean

@@ -10,5 +10,4 @@ sealed class ChatListStateChanges {
     data class ErrorOccurred(val throwable: Throwable): ChatListStateChanges()
     data class RefreshStateChanged(val newRefreshState: Boolean): ChatListStateChanges()
     data class RetryingStateChanged(val newRetryingState: Boolean): ChatListStateChanges()
-
 }
