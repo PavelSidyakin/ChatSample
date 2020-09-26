@@ -7,7 +7,7 @@ import com.example.chatsample.auth.store.AuthIntentExecutorImpl
 import com.example.chatsample.auth.store.AuthRepository
 import com.example.chatsample.auth.store.AuthStoreFactory
 import com.example.chatsample.auth.store.AuthStoreFactoryImpl
-import com.example.chatsample.chatlist.store.ChatListDbRepository
+import com.example.chatsample.chatlist.store.data.ChatListDbRepository
 import com.example.chatsample.chatlist.store.ChatListIntentExecutor
 import com.example.chatsample.chatlist.store.ChatListIntentExecutorImpl
 import com.example.chatsample.chatlist.store.ChatListStoreFactory
@@ -17,7 +17,7 @@ import com.example.chatsample.chatlist.store.recycler.ChatDataSourceImpl
 import com.example.chatsample.data.ContextProvider
 import com.example.chatsample.data.ContextProviderImpl
 import com.example.chatsample.data.TelegramChatRepositoryImpl
-import com.example.chatsample.chatlist.store.ChatListRemoteRepository
+import com.example.chatsample.chatlist.store.data.ChatListRemoteRepository
 import com.example.chatsample.chatlist.store.recycler.ChatDataSource
 import com.example.chatsample.data.ChatListDbRepositoryImpl
 import dagger.Binds

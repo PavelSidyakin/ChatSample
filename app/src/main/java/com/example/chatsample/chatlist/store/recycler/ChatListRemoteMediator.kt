@@ -6,8 +6,8 @@ import androidx.paging.LoadType
 import androidx.paging.PagingConfig
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
-import com.example.chatsample.chatlist.store.ChatListDbRepository
-import com.example.chatsample.chatlist.store.ChatListRemoteRepository
+import com.example.chatsample.chatlist.store.data.ChatListDbRepository
+import com.example.chatsample.chatlist.store.data.ChatListRemoteRepository
 import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.NextChatListInfo
 import com.example.chatsample.model.RequestChatListResult

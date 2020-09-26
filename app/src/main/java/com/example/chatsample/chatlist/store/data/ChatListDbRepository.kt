@@ -1,4 +1,4 @@
-package com.example.chatsample.chatlist.store
+package com.example.chatsample.chatlist.store.data
 
 import androidx.paging.PagingSource
 import com.example.chatsample.model.ChatInfo

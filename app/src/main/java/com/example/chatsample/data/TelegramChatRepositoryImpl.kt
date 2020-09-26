@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import com.example.chatsample.auth.store.AuthRepository
-import com.example.chatsample.chatlist.store.ChatListRemoteRepository
+import com.example.chatsample.chatlist.store.data.ChatListRemoteRepository
 import com.example.chatsample.model.AuthResult
 import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType

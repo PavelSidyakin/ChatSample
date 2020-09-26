@@ -4,8 +4,8 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.example.chatsample.chatlist.store.ChatListDbRepository
-import com.example.chatsample.chatlist.store.ChatListRemoteRepository
+import com.example.chatsample.chatlist.store.data.ChatListDbRepository
+import com.example.chatsample.chatlist.store.data.ChatListRemoteRepository
 import com.example.chatsample.model.ChatInfo
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

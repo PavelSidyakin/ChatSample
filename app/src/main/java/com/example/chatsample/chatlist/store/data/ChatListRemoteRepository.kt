@@ -1,4 +1,4 @@
-package com.example.chatsample.chatlist.store
+package com.example.chatsample.chatlist.store.data
 
 import com.example.chatsample.model.NextChatListInfo
 import com.example.chatsample.model.RequestChatListResult
