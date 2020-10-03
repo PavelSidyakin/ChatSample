@@ -4,6 +4,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.chatsample.chat.model.MessageInfo
 import com.example.chatsample.chat.store.data.ChatDbRepository
 import com.example.chatsample.chat.store.data.ChatRemoteRepository
 import com.example.chatsample.chatlist.store.recycler.ChatListDataSource
@@ -14,7 +15,7 @@ import javax.inject.Inject
 class ChatDataSourceImpl @Inject constructor(
     private val chatRemoteRepository: ChatRemoteRepository,
     private val chatDbRepository: ChatDbRepository,
-) : ChatListDataSource {
+) : ChatDataSource {
 
     private val pageListConfig =
         PagingConfig(
@@ -23,10 +24,10 @@ class ChatDataSourceImpl @Inject constructor(
         )
 
     @ExperimentalPagingApi
-    override fun observeChatList(): Flow<PagingData<ChatInfo>> {
+    override fun observeMessageList(): Flow<PagingData<MessageInfo>> {
         return Pager(
             config = pageListConfig,
-            pagingSourceFactory = { chatDbRepository.getAllChats() },
+            pagingSourceFactory = { chatDbRepository.getAllMessages() },
             remoteMediator = ChatRemoteMediator(chatDbRepository, chatRemoteRepository, pageListConfig)
         )
             .flow

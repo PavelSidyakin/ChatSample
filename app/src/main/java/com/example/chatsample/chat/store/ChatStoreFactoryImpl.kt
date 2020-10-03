@@ -11,12 +11,12 @@ class ChatStoreFactoryImpl @Inject constructor(
     private val chatIntentExecutor: ChatIntentExecutor
 ) : ChatStoreFactory {
 
-    override fun create(): ChatStore =
+    override fun create(chatId: Long): ChatStore =
         object : ChatStore, Store<ChatStore.Intent, ChatStore.State, ChatStore.Label>
         by storeFactory.create(
-            name = "ChatListStore",
+            name = "ChatStore_$chatId",
             initialState = ChatStore.State(),
-            bootstrapper = SimpleBootstrapper(ChatBootstrapper.Action.LoadList()),
+            bootstrapper = SimpleBootstrapper(ChatBootstrapper.Action.LoadMessageList(chatId)),
             executorFactory = ::getExecutor,
             reducer = ChatReducer()
         ) {}

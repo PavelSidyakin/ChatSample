@@ -14,7 +14,6 @@ import com.example.chatsample.R
 import com.example.chatsample.chat.controller.ChatController
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.chat_frament.chat_root_view
-import java.io.Serializable
 
 class ChatFragment : Fragment(){
     private val instanceKeeperProvider by lazy { getInstanceKeeperProvider() }
@@ -23,7 +22,12 @@ class ChatFragment : Fragment(){
 
     private val controller: ChatController by lazy {
         ChatApplication.getAppComponent()
-            .chatControllerFactory.create(instanceKeeperProvider)
+            .chatControllerFactory.create(
+                instanceKeeperProvider,
+                dependencies = object: ChatController.Dependencies {
+                    override val chatId: Long = args.chatId
+                }
+            )
     }
 
     override fun onCreateView(
@@ -35,7 +39,6 @@ class ChatFragment : Fragment(){
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val chatId = args.chatId
        controller.onViewCreated(ChatViewImpl(chat_root_view, lifecycle), lifecycle.asMviLifecycle())
     }
 

@@ -13,7 +13,7 @@ import com.example.chatsample.chat.store.ChatStoreFactory
 import com.example.chatsample.chat.store.ChatStoreFactoryImpl
 import com.example.chatsample.chat.store.data.ChatDbRepository
 import com.example.chatsample.chat.store.data.ChatRemoteRepository
-import com.example.chatsample.data.ChatDb
+import com.example.chatsample.data.database.ChatDb
 import com.example.chatsample.chat.store.recycler.ChatDataSourceImpl
 import com.example.chatsample.chatlist.store.ChatListIntentExecutor
 import com.example.chatsample.chatlist.store.ChatListIntentExecutorImpl

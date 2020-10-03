@@ -1,17 +1,13 @@
-package com.example.chatsample.data
+package com.example.chatsample.data.database
 
-import android.content.Context
 import androidx.paging.PagingSource
 import androidx.room.ColumnInfo
 import androidx.room.Dao
-import androidx.room.Database
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
-import androidx.room.Room
-import androidx.room.RoomDatabase
 import com.example.chatsample.model.ChatType
 import kotlinx.coroutines.flow.Flow
 
@@ -40,7 +36,7 @@ data class DbSubChatListRemoteKey(
 )
 // ------------------------- Dao ---------------------------------
 @Dao
-interface ChatsDao {
+interface ChatListDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(chats: List<DbChatListItem>)
 
@@ -70,25 +66,4 @@ interface SubChatListRemoteKeyDao {
 
     @Query("DELETE FROM chats_remote_key")
     suspend fun deleteRemoteKey()
-}
-// ------------------------- Database ---------------------------------
-@Database(
-    entities = [DbChatListItem::class, DbSubChatListRemoteKey::class],
-    version = 1,
-    exportSchema = false
-)
-abstract class ChatDb : RoomDatabase() {
-
-    companion object {
-        fun create(context: Context): ChatDb {
-            val databaseBuilder =
-                Room.databaseBuilder(context, ChatDb::class.java, "ChatDb.db")
-            return databaseBuilder
-                .fallbackToDestructiveMigration()
-                .build()
-        }
-    }
-
-    abstract fun chats(): ChatsDao
-    abstract fun subChatListRemoteKey(): SubChatListRemoteKeyDao
 }

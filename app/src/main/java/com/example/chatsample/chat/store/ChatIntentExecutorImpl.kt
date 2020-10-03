@@ -1,28 +1,21 @@
 package com.example.chatsample.chat.store
 
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.map
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.example.chatsample.chat.store.recycler.ChatDataSource
 import com.example.chatsample.chatlist.store.recycler.ChatListDataSource
-import com.example.chatsample.chat.view.recycler.MessageItem
-import com.example.chatsample.model.ChatInfo
-import com.example.chatsample.model.ChatType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ChatIntentExecutorImpl @Inject constructor(
-    private val chatListDataSource: ChatListDataSource
+    private val chatListDataSource: ChatDataSource
 ) : SuspendExecutor<ChatStore.Intent, ChatBootstrapper.Action, ChatStore.State, ChatStateChanges, ChatStore.Label>(
     mainContext = Dispatchers.Main
 ), ChatIntentExecutor {
 
     override suspend fun executeAction(action: ChatBootstrapper.Action, getState: () -> ChatStore.State) {
         when (action) {
-            is ChatBootstrapper.Action.LoadList -> handleActionLoadList()
+            is ChatBootstrapper.Action.LoadMessageList -> handleActionLoadMessageList(action.chatId)
         }
     }
 
@@ -33,7 +26,7 @@ class ChatIntentExecutorImpl @Inject constructor(
         }
     }
 
-    private suspend fun handleActionLoadList() = coroutineScope {
+    private suspend fun handleActionLoadMessageList(chatId: Long) = coroutineScope {
 //        chatListDataSource.observeChatList()
 //            .map { pagingData -> pagingData.map { convertChatInfo2ChatListItem(it) } }
 //            .cachedIn(this)

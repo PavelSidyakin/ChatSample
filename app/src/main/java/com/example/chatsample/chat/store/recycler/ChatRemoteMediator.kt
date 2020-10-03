@@ -6,6 +6,7 @@ import androidx.paging.LoadType
 import androidx.paging.PagingConfig
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
+import com.example.chatsample.chat.model.MessageInfo
 import com.example.chatsample.chat.store.data.ChatDbRepository
 import com.example.chatsample.chat.store.data.ChatRemoteRepository
 import com.example.chatsample.model.ChatInfo
@@ -26,7 +27,7 @@ class ChatRemoteMediator(
     private val chatDbRepository: ChatDbRepository,
     private val chatRemoteRepository: ChatRemoteRepository,
     private val pagingConfig: PagingConfig,
-) : RemoteMediator<Int, ChatInfo>() {
+) : RemoteMediator<Int, MessageInfo>() {
     private val monitorJob = Job() + Dispatchers.IO
 
     override suspend fun initialize(): InitializeAction  = coroutineScope {
@@ -56,7 +57,7 @@ class ChatRemoteMediator(
                     // We don't need pagination at the top of the list
                     return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    val remoteKey = chatDbRepository.getNextRemoteKey()
+                    val remoteKey = chatDbRepository.getChatListNextRemoteKey()
 
                     if (remoteKey == null || remoteKey.isEmpty()) {
                         return MediatorResult.Success(endOfPaginationReached = true)
@@ -92,10 +93,10 @@ class ChatRemoteMediator(
 
                 val nextStringToken = serializeToString(networkChatListResult.nextChatListInfo)
 
-                chatDbRepository.deleteRemoteKey()
-                chatDbRepository.setNextRemoteKey(nextStringToken ?: "")
+                chatDbRepository.deleteChatListRemoteKey()
+                chatDbRepository.setChatListNextRemoteKey(nextStringToken ?: "")
 
-                chatDbRepository.insertAll(networkChatListResult.chats)
+                chatDbRepository.insertAllChats(networkChatListResult.chats)
             }
 
             return MediatorResult.Success(endOfPaginationReached = networkChatListResult.chats.isEmpty())

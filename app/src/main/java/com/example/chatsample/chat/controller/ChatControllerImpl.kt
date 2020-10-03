@@ -17,11 +17,12 @@ import kotlinx.coroutines.Dispatchers
 
 class ChatControllerImpl @AssistedInject constructor(
     chatStoreFactory: ChatStoreFactory,
-    @Assisted private val instanceKeeperProvider: InstanceKeeperProvider
+    @Assisted private val instanceKeeperProvider: InstanceKeeperProvider,
+    @Assisted private val dependencies: ChatController.Dependencies,
 ): ChatController {
 
     private val chatStore = instanceKeeperProvider.get<ChatStore>().getOrCreateStore {
-        chatStoreFactory.create()
+        chatStoreFactory.create(dependencies.chatId)
     }
 
     override fun onViewCreated(chatView: ChatView, viewLifecycle: Lifecycle) {
@@ -44,7 +45,8 @@ class ChatControllerImpl @AssistedInject constructor(
     @AssistedInject.Factory
     interface Factory {
         fun create(
-            instanceKeeperProvider: InstanceKeeperProvider
+            instanceKeeperProvider: InstanceKeeperProvider,
+            dependencies: ChatController.Dependencies,
         ): ChatControllerImpl
     }
 
