@@ -7,8 +7,9 @@ import com.example.chatsample.chatlist.view.recycler.ChatListItem
 interface ChatListStore : Store<ChatListStore.Intent, ChatListStore.State, ChatListStore.Label> {
 
     sealed class Intent {
-        class Refresh: Intent()
-        class Retry: Intent()
+        class OnRefresh: Intent()
+        class OnRetry: Intent()
+        data class OnChatSelected(val chatId: Long): Intent()
     }
 
     data class State(

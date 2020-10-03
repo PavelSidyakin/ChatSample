@@ -12,12 +12,22 @@ import com.example.chatsample.R
 import com.example.chatsample.chatlist.controller.ChatListController
 import kotlinx.android.synthetic.main.chat_list_frament.chat_list_root_view
 
-class ChatListFragment : Fragment(){
+class ChatListFragment : Fragment() {
+
+    var chatSelectedCallback: ((ChatListController.Output) -> Unit)? = null
+
     private val instanceKeeperProvider by lazy { getInstanceKeeperProvider() }
 
     private val controller: ChatListController by lazy {
         ChatApplication.getAppComponent()
-            .chatListControllerFactory.create(instanceKeeperProvider)
+            .chatListControllerFactory.create(
+                instanceKeeperProvider,
+                dependencies = object : ChatListController.Dependencies {
+                    override val chatListOutputCallback: (ChatListController.Output) -> Unit = {
+                        chatSelectedCallback?.invoke(it)
+                    }
+                }
+            )
     }
 
     override fun onCreateView(

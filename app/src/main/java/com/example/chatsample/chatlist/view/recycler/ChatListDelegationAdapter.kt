@@ -22,7 +22,6 @@ class ChatListDelegationAdapter(clickListeners: ChatListClickListeners) : Paging
 }
 
 interface ChatListClickListeners {
-    val loadingItemClickListener: () -> Unit
     val directChatItemClickedListener: (ChatListItem.Chat.Direct) -> Unit
     val groupChatItemClickedListener: (ChatListItem.Chat.Group) -> Unit
 }

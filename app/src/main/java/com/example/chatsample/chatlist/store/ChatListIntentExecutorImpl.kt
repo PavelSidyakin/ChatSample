@@ -28,8 +28,8 @@ class ChatListIntentExecutorImpl @Inject constructor(
 
     override suspend fun executeIntent(intent: ChatListStore.Intent, getState: () -> ChatListStore.State) {
         when (intent) {
-            is ChatListStore.Intent.Refresh -> dispatch(ChatListStateChanges.RefreshStateChanged(true))
-            is ChatListStore.Intent.Retry -> dispatch(ChatListStateChanges.RefreshStateChanged(true))
+            is ChatListStore.Intent.OnRefresh -> dispatch(ChatListStateChanges.RefreshStateChanged(true))
+            is ChatListStore.Intent.OnRetry -> dispatch(ChatListStateChanges.RefreshStateChanged(true))
         }
     }
 

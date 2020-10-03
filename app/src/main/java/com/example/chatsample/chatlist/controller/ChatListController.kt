@@ -7,4 +7,11 @@ interface ChatListController {
 
     fun onViewCreated(chatListView: ChatListView, viewLifecycle: Lifecycle)
 
+    interface Dependencies {
+        val chatListOutputCallback: (Output) -> Unit
+    }
+
+    sealed class Output {
+        data class ChatSelected(val chatId: Long) : Output()
+    }
 }

@@ -3,13 +3,11 @@ package com.example.chatsample.chatlist.view
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.Lifecycle
-import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.arkivanov.mvikotlin.core.utils.diff
 import com.arkivanov.mvikotlin.core.view.BaseMviView
 import com.arkivanov.mvikotlin.core.view.ViewRenderer
-import com.example.chatsample.chat.store.ChatStore
 import com.example.chatsample.chatlist.store.ChatListStore
 import com.example.chatsample.chatlist.view.recycler.ChatListClickListeners
 import com.example.chatsample.chatlist.view.recycler.ChatListDelegationAdapter
@@ -25,16 +23,12 @@ class ChatListViewImpl(
 ) : BaseMviView<ChatListStore.State, ChatListStore.Intent>(), ChatListView {
 
     private val chatListClickListeners = object : ChatListClickListeners {
-        override val loadingItemClickListener: () -> Unit = {
-
-        }
-
         override val directChatItemClickedListener: (ChatListItem.Chat.Direct) -> Unit = {
-
+            dispatch(ChatListStore.Intent.OnChatSelected(it.chatId))
         }
 
         override val groupChatItemClickedListener: (ChatListItem.Chat.Group) -> Unit = {
-
+            dispatch(ChatListStore.Intent.OnChatSelected(it.chatId))
         }
     }
 
@@ -47,16 +41,16 @@ class ChatListViewImpl(
                 .withLoadStateHeaderAndFooter(
                     ChatListLoadStateAdapter(
                         retry = {
-                            dispatch(ChatListStore.Intent.Retry())
+                            dispatch(ChatListStore.Intent.OnRetry())
                         }
                     ),
                     ChatListLoadStateAdapter(
                         retry = {
-                            dispatch(ChatListStore.Intent.Retry())
+                            dispatch(ChatListStore.Intent.OnRetry())
                         }
                     ))
 
-            rootView.chat_list_swipe_refresh.setOnRefreshListener { dispatch(ChatListStore.Intent.Refresh()) }
+            rootView.chat_list_swipe_refresh.setOnRefreshListener { dispatch(ChatListStore.Intent.OnRefresh()) }
         }
 
         chatListAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {

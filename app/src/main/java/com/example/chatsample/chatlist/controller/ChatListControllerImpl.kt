@@ -14,10 +14,12 @@ import com.example.chatsample.chatlist.view.ChatListView
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.mapNotNull
 
 class ChatListControllerImpl @AssistedInject constructor(
     chatListStoreFactory: ChatListStoreFactory,
-    @Assisted private val instanceKeeperProvider: InstanceKeeperProvider
+    @Assisted private val instanceKeeperProvider: InstanceKeeperProvider,
+    @Assisted private val dependencies: ChatListController.Dependencies,
 ): ChatListController {
 
     private val chatListStore = instanceKeeperProvider.get<ChatListStore>().getOrCreateStore {
@@ -37,6 +39,7 @@ class ChatListControllerImpl @AssistedInject constructor(
             Dispatchers.Main
         ) {
             chatListStore.states bindTo chatListView
+            chatListView.events.mapNotNull { chatListIntentToOutput(it) } bindTo { dependencies.chatListOutputCallback(it) }
         }
 
     }
@@ -44,7 +47,8 @@ class ChatListControllerImpl @AssistedInject constructor(
     @AssistedInject.Factory
     interface Factory {
         fun create(
-            instanceKeeperProvider: InstanceKeeperProvider
+            instanceKeeperProvider: InstanceKeeperProvider,
+            dependencies: ChatListController.Dependencies,
         ): ChatListControllerImpl
     }
 
