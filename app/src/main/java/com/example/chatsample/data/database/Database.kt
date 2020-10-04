@@ -13,7 +13,7 @@ import androidx.room.RoomDatabase
         // Chat list
         DbChatListItem::class, DbSubChatListRemoteKey::class,
         // Message list
-        DbMessageItemTable::class, DbMessageSubListRemoteKeyTable::class,
+        DbMessageItemTable::class, DbMessageSubListRemoteKeyTable::class, DbMessageWithUserItemQuery::class,
     ],
     version = 1,
     exportSchema = false

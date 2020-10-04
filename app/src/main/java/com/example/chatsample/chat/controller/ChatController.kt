@@ -9,6 +9,7 @@ interface ChatController {
     fun onViewCreated(chatView: ChatView, viewLifecycle: Lifecycle)
 
     interface Dependencies {
+        val lifecycle: Lifecycle
         val chatId: Long
     }
 

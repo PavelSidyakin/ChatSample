@@ -3,6 +3,7 @@ package com.example.chatsample.chat.model
 enum class MessageStatus(val intValue: Int) {
     SENDING(1),
     DELIVERED(2),
+    ERROR(3),
     ;
 
     companion object {

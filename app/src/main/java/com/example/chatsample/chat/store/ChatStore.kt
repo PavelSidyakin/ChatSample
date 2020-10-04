@@ -2,7 +2,7 @@ package com.example.chatsample.chat.store
 
 import androidx.paging.PagingData
 import com.arkivanov.mvikotlin.core.store.Store
-import com.example.chatsample.chat.view.recycler.MessageItem
+import com.example.chatsample.chat.view.recycler.MessageListItem
 
 interface ChatStore : Store<ChatStore.Intent, ChatStore.State, ChatStore.Label> {
 
@@ -15,7 +15,7 @@ interface ChatStore : Store<ChatStore.Intent, ChatStore.State, ChatStore.Label> 
         val isLoading: Boolean = false,
         val isRefreshing: Boolean = false,
         val isRetrying: Boolean = false,
-        val pagingData: PagingData<MessageItem>? = null,
+        val pagingData: PagingData<MessageListItem>? = null,
         val error: Throwable? = null
     )
 

@@ -1,5 +1,6 @@
 package com.example.chatsample.data
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.room.withTransaction
 import com.example.chatsample.chat.model.MessageInfo
@@ -75,8 +76,31 @@ class ChatDbRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertAllMessages(chatId: Long, messages: List<MessageInfo>) {
-        commonDao.insertUsers(messages.map { it.messageSenderId to it.messageSenderName }.map { DbUserItem(it.first, it.second) })
-        messagesDao.insertAllMessages(messages.map { it.toDbMessageItemTable(chatId) })
+        withTransaction {
+            val existingMessages = messagesDao.selectAllMessagesList(chatId)
+            commonDao.insertUsers(messages.map {
+                DbUserItem(
+                    it.messageSenderId,
+                    it.messageSenderName
+                )
+            })
+            val existingMessages1 = messagesDao.selectAllMessagesList(chatId)
+            messagesDao.insertAllMessages(messages.map { it.toDbMessageItemTable() })
+            val existingMessages2 = messagesDao.selectAllMessagesList(chatId)
+            Log.i("Messages", "$existingMessages2")
+        }
+    }
+
+    override suspend fun insertMessage(chatId: Long, message: MessageInfo) {
+        withTransaction {
+            commonDao.insertUser(message.let {
+                DbUserItem(
+                    it.messageSenderId,
+                    it.messageSenderName
+                )
+            })
+            messagesDao.insertMessage(message.toDbMessageItemTable())
+        }
     }
 
     override suspend fun deleteAllMessages(chatId: Long) {
@@ -98,10 +122,15 @@ class ChatDbRepositoryImpl @Inject constructor(
     private fun DbMessageWithUserItemQuery.toMessageInfo(): MessageInfo {
         return when (messageType) {
             MessageInfo.OutgoingMessage.MESSAGE_TYPE_ID -> MessageInfo.OutgoingMessage(
-                messageId, messageText, messageSenderId, messageSenderName, MessageStatus.byIntValue(messageStatus)
+                chatId,
+                messageId,
+                messageText,
+                messageSenderId,
+                messageSenderName,
+                MessageStatus.byIntValue(messageStatus)
             )
             MessageInfo.IncomingMessage.MESSAGE_TYPE_ID -> MessageInfo.IncomingMessage(
-                messageId, messageText, messageSenderId, messageSenderName
+                chatId, messageId, messageText, messageSenderId, messageSenderName
             )
             else -> throw IllegalStateException("Wrong message type: $messageType")
         }
@@ -110,21 +139,43 @@ class ChatDbRepositoryImpl @Inject constructor(
     private fun MessageInfo.toDbMessageWithUserItemQuery(): DbMessageWithUserItemQuery {
         return when (this) {
             is MessageInfo.OutgoingMessage -> DbMessageWithUserItemQuery(
-                messageId, messageText, messageSenderId, messageSenderName, messageStatus.intValue, MessageInfo.OutgoingMessage.MESSAGE_TYPE_ID
+                chatId,
+                messageId,
+                messageText,
+                messageSenderId,
+                messageSenderName,
+                messageStatus.intValue,
+                MessageInfo.OutgoingMessage.MESSAGE_TYPE_ID
             )
             is MessageInfo.IncomingMessage -> DbMessageWithUserItemQuery(
-                messageId, messageText, messageSenderId, messageSenderName, 0, MessageInfo.IncomingMessage.MESSAGE_TYPE_ID
+                chatId,
+                messageId,
+                messageText,
+                messageSenderId,
+                messageSenderName,
+                0,
+                MessageInfo.IncomingMessage.MESSAGE_TYPE_ID
             )
         }
     }
 
-    private fun MessageInfo.toDbMessageItemTable(chatId: Long): DbMessageItemTable {
+    private fun MessageInfo.toDbMessageItemTable(): DbMessageItemTable {
         return when (this) {
             is MessageInfo.OutgoingMessage -> DbMessageItemTable(
-                chatId, messageId, messageText, messageSenderId, messageStatus.intValue, MessageInfo.OutgoingMessage.MESSAGE_TYPE_ID
+                chatId,
+                messageId,
+                messageText,
+                messageSenderId,
+                messageStatus.intValue,
+                MessageInfo.OutgoingMessage.MESSAGE_TYPE_ID
             )
             is MessageInfo.IncomingMessage -> DbMessageItemTable(
-                chatId, messageId, messageText, messageSenderId, 0, MessageInfo.IncomingMessage.MESSAGE_TYPE_ID
+                chatId,
+                messageId,
+                messageText,
+                messageSenderId,
+                0,
+                MessageInfo.IncomingMessage.MESSAGE_TYPE_ID
             )
         }
     }

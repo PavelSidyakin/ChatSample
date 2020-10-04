@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import com.arkivanov.mvikotlin.core.lifecycle.Lifecycle
 import com.arkivanov.mvikotlin.extensions.androidx.instancekeeper.getInstanceKeeperProvider
 import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
 import com.example.chatsample.ChatApplication
@@ -26,6 +27,7 @@ class ChatFragment : Fragment(){
                 instanceKeeperProvider,
                 dependencies = object: ChatController.Dependencies {
                     override val chatId: Long = args.chatId
+                    override val lifecycle: Lifecycle = this@ChatFragment.lifecycle.asMviLifecycle()
                 }
             )
     }

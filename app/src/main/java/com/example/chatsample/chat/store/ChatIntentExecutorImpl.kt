@@ -1,14 +1,20 @@
 package com.example.chatsample.chat.store
 
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.example.chatsample.chat.model.MessageInfo
 import com.example.chatsample.chat.store.recycler.ChatDataSource
-import com.example.chatsample.chatlist.store.recycler.ChatListDataSource
+import com.example.chatsample.chat.view.recycler.MessageListItem
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import javax.inject.Inject
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 
 class ChatIntentExecutorImpl @Inject constructor(
-    private val chatListDataSource: ChatDataSource
+    private val chatDataSource: ChatDataSource
 ) : SuspendExecutor<ChatStore.Intent, ChatBootstrapper.Action, ChatStore.State, ChatStateChanges, ChatStore.Label>(
     mainContext = Dispatchers.Main
 ), ChatIntentExecutor {
@@ -27,13 +33,20 @@ class ChatIntentExecutorImpl @Inject constructor(
     }
 
     private suspend fun handleActionLoadMessageList(chatId: Long) = coroutineScope {
-//        chatListDataSource.observeChatList()
-//            .map { pagingData -> pagingData.map { convertChatInfo2ChatListItem(it) } }
-//            .cachedIn(this)
-//            .collectLatest { pagingData: PagingData<MessageItem> ->
-//                dispatch(ChatStateChanges.ListChanged(pagingData))
-//                dispatch(ChatStateChanges.RefreshStateChanged(false))
-//            }
+        chatDataSource.observeMessageList(chatId)
+            .map { pagingData -> pagingData.map { convertMessageInfo2MessageListItem(it) } }
+            .cachedIn(this)
+            .collectLatest { pagingData: PagingData<MessageListItem> ->
+                dispatch(ChatStateChanges.ListChanged(pagingData))
+                dispatch(ChatStateChanges.RefreshStateChanged(false))
+            }
+    }
+
+    private fun convertMessageInfo2MessageListItem(messageInfo: MessageInfo): MessageListItem {
+        return when (messageInfo) {
+            is MessageInfo.OutgoingMessage -> MessageListItem.Message.OutgoingMessage(messageInfo.chatId, messageInfo.messageId, messageInfo.messageText, messageInfo.messageStatus)
+            is MessageInfo.IncomingMessage -> MessageListItem.Message.IncomingMessage(messageInfo.chatId, messageInfo.messageId, messageInfo.messageText, messageInfo.messageSenderName)
+        }
     }
 
 }

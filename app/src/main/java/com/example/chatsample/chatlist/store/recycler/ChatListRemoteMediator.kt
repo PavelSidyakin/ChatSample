@@ -82,7 +82,6 @@ class ChatListRemoteMediator(
                 else -> pageListConfig.pageSize
             }
         )
-        delay(1000)
 
         if (networkChatListResult is RequestChatListResult.Ok) {
             chatListDbRepository.withTransaction {
@@ -108,7 +107,7 @@ class ChatListRemoteMediator(
     }
 
     companion object {
-        private const val TAG = "Mediator"
+        private const val TAG = "ChatListMediator"
     }
 
 }

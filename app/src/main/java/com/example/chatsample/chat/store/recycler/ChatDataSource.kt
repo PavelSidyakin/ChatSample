@@ -6,5 +6,5 @@ import com.example.chatsample.model.ChatInfo
 import kotlinx.coroutines.flow.Flow
 
 interface ChatDataSource {
-    fun observeMessageList(): Flow<PagingData<MessageInfo>>
+    fun observeMessageList(chatId: Long): Flow<PagingData<MessageInfo>>
 }

@@ -28,6 +28,8 @@ interface ChatDbRepository {
 
     suspend fun insertAllMessages(chatId: Long, messages: List<MessageInfo>)
 
+    suspend fun insertMessage(chatId: Long, message: MessageInfo)
+
     suspend fun deleteAllMessages(chatId: Long)
 
     suspend fun setMessageListNextRemoteKey(chatId: Long, key: String)

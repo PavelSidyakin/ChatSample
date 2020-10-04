@@ -4,6 +4,9 @@ import androidx.paging.PagingSource
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
+import androidx.room.ForeignKey.NO_ACTION
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
@@ -11,7 +14,20 @@ import androidx.room.Query
 import androidx.room.Update
 
 // ------------------------- Entities ---------------------------------
-@Entity(tableName = "messages", primaryKeys = ["f_chat_id", "f_message_id"])
+@Entity(
+    tableName = "messages",
+    primaryKeys = ["f_chat_id", "f_message_id"],
+//    foreignKeys = [
+//        ForeignKey(
+//            entity = DbUserItem::class,
+//            parentColumns = ["f_user_id"],
+//            childColumns = ["f_message_sender_id"],
+//            onDelete = CASCADE,
+//            onUpdate = NO_ACTION,
+//            deferred = true
+//        )
+//    ]
+)
 data class DbMessageItemTable(
     @ColumnInfo(name = "f_chat_id")
     val chatId: Long,
@@ -43,7 +59,18 @@ data class DbMessageSubListRemoteKeyTable(
 )
 // ------------------------- Queries ---------------------------------
 
+//@Entity(tableName = "messages_query",
+//    primaryKeys = ["f_message_id"],
+//    foreignKeys = [
+//        ForeignKey(entity = DbMessageItemTable::class, parentColumns = ["f_message_id"], childColumns = ["f_message_id"]),
+//        ForeignKey(entity = DbUserItem::class, parentColumns = ["f_user_id"], childColumns = ["f_message_sender_id"])
+//    ]
+//)
+@Entity(primaryKeys = ["f_chat_id", "f_message_id"])
 data class DbMessageWithUserItemQuery(
+    @ColumnInfo(name = "f_chat_id")
+    val chatId: Long,
+
     @ColumnInfo(name = "f_message_id")
     val messageId: Long,
 
@@ -66,7 +93,7 @@ data class DbMessageWithUserItemQuery(
 // ------------------------- Dao ---------------------------------
 @Dao
 interface MessageListDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertAllMessages(messages: List<DbMessageItemTable>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -78,16 +105,17 @@ interface MessageListDao {
     @Query(
         """
                 SELECT 
+                    messages.f_chat_id as f_chat_id,
                     messages.f_message_id as f_message_id,
                     messages.f_message_text as f_message_text,
                     messages.f_message_sender_id as f_message_sender_id,
                     users.f_user_name as f_message_sender_name,
                     messages.f_message_status as f_message_status,
                     messages.f_message_type as f_message_type
-                FROM messages, users
+                FROM messages
+                    LEFT JOIN users ON f_message_sender_id == users.f_user_id
                 WHERE 
-                    :chatId == messages.f_message_id AND 
-                    f_message_sender_id == users.f_user_id
+                    :chatId == messages.f_chat_id 
                 ORDER BY f_message_id DESC
             """
     )
@@ -95,6 +123,9 @@ interface MessageListDao {
 
     @Query("DELETE FROM messages WHERE :chatId == messages.f_chat_id")
     suspend fun deleteAllMessages(chatId: Long)
+
+    @Query("SELECT * FROM messages WHERE :chatId == messages.f_chat_id")
+    suspend fun selectAllMessagesList(chatId: Long): List<DbMessageItemTable>
 }
 
 @Dao

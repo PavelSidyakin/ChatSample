@@ -3,6 +3,7 @@ package com.example.chatsample
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.chatsample.auth.view.AuthFragment
 import com.example.chatsample.chat.view.ChatFragment
 import com.example.chatsample.chatlist.controller.ChatListController
 import com.example.chatsample.chatlist.view.ChatListFragment
@@ -47,8 +48,32 @@ class ChatMainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showChatListFragment() {
+        val fragmentManager = supportFragmentManager
+        fragmentManager.findFragmentByTag(ChatListFragment.FRAGMENT_TAG)?.let {
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.show(it)
+            fragmentTransaction.commit()
+        }?:let {
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.main_activity_container,
+                createChatListFragment(), ChatListFragment.FRAGMENT_TAG
+            )
+            fragmentTransaction.commit()
+        }
+
+    }
+
     override fun onBackPressed() {
-        finish()
+        val fragmentManager = supportFragmentManager
+        fragmentManager.findFragmentByTag(ChatFragment.FRAGMENT_TAG)?.let {
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.remove(it)
+            fragmentTransaction.commit()
+            showChatListFragment()
+        }?:let {
+            finish()
+        }
     }
 
 }

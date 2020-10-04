@@ -4,6 +4,11 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import com.example.chatsample.auth.store.AuthRepository
+import com.example.chatsample.chat.model.MessageInfo
+import com.example.chatsample.chat.model.MessageStatus
+import com.example.chatsample.chat.model.NextMessageListInfo
+import com.example.chatsample.chat.model.RequestMessageListResult
+import com.example.chatsample.chat.model.UpdateMessageListEvent
 import com.example.chatsample.chat.store.data.ChatRemoteRepository
 import com.example.chatsample.chatlist.store.data.ChatListRemoteRepository
 import com.example.chatsample.model.AuthResult
@@ -181,19 +186,29 @@ class TelegramChatRepositoryImpl @Inject constructor(
         updatesChannel.receive() // TestNetwork will produce result to global handler
     }
 
-    override suspend fun requestChatList(nextInfo: NextChatListInfo?, limit: Int): RequestChatListResult {
+    override suspend fun requestChatList(
+        nextInfo: NextChatListInfo?,
+        limit: Int
+    ): RequestChatListResult {
 
         //actualizeNetworkState()
 
         if (!isConnected) {
-          //  throw RuntimeException("Client is not connected")
+            //  throw RuntimeException("Client is not connected")
         }
 
         val chatList = mutableListOf<ChatInfo>()
 
         val nextPageInfo = nextInfo ?: NextChatListInfo(Long.MAX_VALUE, 0)
 
-        val requestInitialChatListResult = sendTdApiRequest(TdApi.GetChats(TdApi.ChatListMain(), nextPageInfo.order, nextPageInfo.chatId, limit))
+        val requestInitialChatListResult = sendTdApiRequest(
+            TdApi.GetChats(
+                TdApi.ChatListMain(),
+                nextPageInfo.order,
+                nextPageInfo.chatId,
+                limit
+            )
+        )
 
         var lastId = 0L
         if (requestInitialChatListResult is TdApi.Chats) {
@@ -228,6 +243,76 @@ class TelegramChatRepositoryImpl @Inject constructor(
         throw RuntimeException("requestInitialChatList() failed")
     }
 
+    override suspend fun requestMessageList(
+        chatId: Long,
+        nextInfo: NextMessageListInfo?,
+        limit: Int
+    ): RequestMessageListResult {
+        //actualizeNetworkState()
+
+        if (!isConnected) {
+            //  throw RuntimeException("Client is not connected")
+        }
+
+        val messageList = mutableListOf<MessageInfo>()
+
+        val nextPageInfo = nextInfo ?: NextMessageListInfo(0)
+
+        val requestMessageListResult = sendTdApiRequest(
+            TdApi.GetChatHistory(
+                chatId,
+                nextPageInfo.fromMessage,
+                0,
+                limit,
+                false
+            )
+        )
+
+        if (requestMessageListResult is TdApi.Messages) {
+            if (requestMessageListResult.messages.isEmpty()) {
+                return RequestMessageListResult.Ok(messageList, null)
+            }
+
+            for (message: TdApi.Message in requestMessageListResult.messages) {
+
+                messageList.add(convertTdApiMessage2MessageInfo(message))
+            }
+
+            return RequestMessageListResult.Ok(
+                messageList,
+                NextMessageListInfo(messageList.last().messageId)
+            )
+        }
+
+        throw RuntimeException("requestMessageList() failed")
+    }
+
+    private suspend fun convertTdApiMessage2MessageInfo(message: TdApi.Message): MessageInfo {
+        val userName =
+            (sendTdApiRequest(TdApi.GetUser(message.senderUserId)) as TdApi.User).firstName
+        val messageText =
+            ((message.content as? TdApi.MessageText)?.text?.text) ?: message.content.toString()
+
+        return if (message.isOutgoing) {
+            MessageInfo.OutgoingMessage(
+                chatId = message.chatId,
+                messageId = message.id,
+                messageText = messageText,
+                messageStatus = MessageStatus.DELIVERED,
+                messageSenderId = message.senderUserId,
+                messageSenderName = userName
+            )
+        } else {
+            MessageInfo.IncomingMessage(
+                chatId = message.chatId,
+                messageId = message.id,
+                messageText = messageText,
+                messageSenderId = message.senderUserId,
+                messageSenderName = userName,
+            )
+        }
+    }
+
     private fun convertTdChatType2ChatType(tdChatType: TdApi.ChatType): ChatType {
         return when (tdChatType) {
             is TdApi.ChatTypeBasicGroup -> ChatType.GROUP
@@ -242,9 +327,9 @@ class TelegramChatRepositoryImpl @Inject constructor(
             .mapNotNull { tdApiObject ->
                 if (tdApiObject is TdApi.UpdateChatLastMessage) {
 
-                    val chatObject = sendTdApiRequest(TdApi.GetChat(tdApiObject.chatId)) as TdApi.Chat
+                    val chatObject =
+                        sendTdApiRequest(TdApi.GetChat(tdApiObject.chatId)) as TdApi.Chat
                     UpdateChatListEvent(
-                        //UpdateChatListEventType.ADDED,
                         ChatInfo(
                             chatObject.id,
                             chatObject.title,
@@ -256,6 +341,18 @@ class TelegramChatRepositoryImpl @Inject constructor(
                     null
                 }
 
+            }
+    }
+
+    override fun subscribeMessageListUpdates(chatId: Long): Flow<UpdateMessageListEvent> {
+        return updatesChannel
+            .receiveAsFlow()
+            .mapNotNull { tdApiObject ->
+                if (tdApiObject is TdApi.UpdateNewMessage && tdApiObject.message.chatId == chatId) {
+                    UpdateMessageListEvent(convertTdApiMessage2MessageInfo(tdApiObject.message))
+                } else {
+                    null
+                }
             }
     }
 

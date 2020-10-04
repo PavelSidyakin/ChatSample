@@ -15,8 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:reverseLayout="true"
-        app:stackFromEnd="true" />
+/>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/chat_message_edit_text"

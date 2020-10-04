@@ -13,6 +13,7 @@ import com.example.chatsample.chat.store.ChatStoreFactory
 import com.example.chatsample.chat.store.ChatStoreFactoryImpl
 import com.example.chatsample.chat.store.data.ChatDbRepository
 import com.example.chatsample.chat.store.data.ChatRemoteRepository
+import com.example.chatsample.chat.store.recycler.ChatDataSource
 import com.example.chatsample.data.database.ChatDb
 import com.example.chatsample.chat.store.recycler.ChatDataSourceImpl
 import com.example.chatsample.chatlist.store.ChatListIntentExecutor
@@ -25,6 +26,7 @@ import com.example.chatsample.data.ContextProviderImpl
 import com.example.chatsample.data.TelegramChatRepositoryImpl
 import com.example.chatsample.chatlist.store.data.ChatListRemoteRepository
 import com.example.chatsample.chatlist.store.recycler.ChatListDataSource
+import com.example.chatsample.chatlist.store.recycler.ChatListDataSourceImpl
 import com.example.chatsample.data.ChatDbRepositoryImpl
 import com.example.chatsample.data.ChatListDbRepositoryImpl
 import dagger.Binds
@@ -51,12 +53,6 @@ interface AppModule {
     @Binds
     fun provideContextProvider(contextProvider: ContextProviderImpl): ContextProvider
 
-    @Singleton
-    @Binds
-    fun provideChatDataSource(chatRepository: ChatDataSourceImpl): ChatListDataSource
-
-
-
     // Auth. TODO: move to a separate component
     @Binds
     fun provideAuthIntentExecutor(authIntentExecutor: AuthIntentExecutorImpl): AuthIntentExecutor
@@ -75,6 +71,10 @@ interface AppModule {
     @Singleton
     fun provideChatListDbRepository(chatListDbRepository: ChatListDbRepositoryImpl): ChatListDbRepository
 
+    @Singleton
+    @Binds
+    fun provideChatListDataSource(chatListDataSource: ChatListDataSourceImpl): ChatListDataSource
+
     // Chat. TODO: move to a separate component
     @Binds
     fun provideChatIntentExecutor(chatListIntentExecutor: ChatIntentExecutorImpl): ChatIntentExecutor
@@ -85,6 +85,10 @@ interface AppModule {
     @Binds
     @Singleton
     fun provideChatDbRepository(chatListDbRepository: ChatDbRepositoryImpl): ChatDbRepository
+
+    @Singleton
+    @Binds
+    fun provideChatDataSource(chatRepository: ChatDataSourceImpl): ChatDataSource
 
     companion object {
         @Singleton
