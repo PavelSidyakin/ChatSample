@@ -291,7 +291,7 @@ class TelegramChatRepositoryImpl @Inject constructor(
         val userName =
             (sendTdApiRequest(TdApi.GetUser(message.senderUserId)) as TdApi.User).firstName
         val messageText =
-            ((message.content as? TdApi.MessageText)?.text?.text) ?: message.content.toString()
+            ((message.content as? TdApi.MessageText)?.text?.text) ?: message.content.toString().take(16)
 
         return if (message.isOutgoing) {
             MessageInfo.OutgoingMessage(

@@ -34,7 +34,6 @@ class ChatListViewImpl(
 
     private val chatListAdapter = ChatListDelegationAdapter(chatListClickListeners)
 
-
     init {
         with(rootView) {
             rootView.chat_list_list.adapter = chatListAdapter
@@ -53,16 +52,16 @@ class ChatListViewImpl(
             rootView.chat_list_swipe_refresh.setOnRefreshListener { dispatch(ChatListStore.Intent.OnRefresh()) }
         }
 
-        chatListAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-                Log.i(TAG, "ChatListViewImpl.onItemRangeChanged(): positionStart = $positionStart, itemCount = $itemCount")
-                val pos = (rootView.chat_list_list.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
-                Log.i(TAG, "ChatListViewImpl current pos: ${pos}")
-                pos?.let { position ->
-                    rootView.chat_list_list.scrollToPosition(pos)
-                }
-            }
-        })
+//        chatListAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+//            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+//                Log.i(TAG, "ChatListViewImpl.onItemRangeChanged(): positionStart = $positionStart, itemCount = $itemCount")
+//                val pos = (rootView.chat_list_list.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition()
+//                Log.i(TAG, "ChatListViewImpl current pos: ${pos}")
+//                pos?.let { position ->
+//                    rootView.chat_list_list.scrollToPosition(pos)
+//                }
+//            }
+//        })
     }
 
     override val renderer: ViewRenderer<ChatListStore.State> = diff {

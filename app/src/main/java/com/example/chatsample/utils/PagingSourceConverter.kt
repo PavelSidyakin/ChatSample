@@ -4,14 +4,14 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 
-fun <Key: Any, Value: Any, NewValue: Any> PagingSource<Key, Value>.mapValue(
+fun <Key : Any, Value : Any, NewValue : Any> PagingSource<Key, Value>.mapValue(
     converterOldToNew: (Value) -> NewValue,
     converterNewToOld: (NewValue) -> Value,
 ): PagingSource<Key, NewValue> {
     return NewPagingSource({ this }, converterOldToNew, converterNewToOld)
 }
 
-private class NewPagingSource<Key : Any, Value : Any, NewValue: Any>(
+private class NewPagingSource<Key : Any, Value : Any, NewValue : Any>(
     private val oldDataSourceFactory: () -> PagingSource<Key, Value>,
     private val converterOldToNew: (Value) -> NewValue,
     private val converterNewToOld: (NewValue) -> Value,
@@ -61,9 +61,18 @@ private class NewPagingSource<Key : Any, Value : Any, NewValue: Any>(
                 },
                 anchorPosition = state.anchorPosition,
                 config = state.config,
-                leadingPlaceholderCount = 0
+                leadingPlaceholderCount = state.getLeadingPlaceholderCount()
             )
         )
+    }
+
+    // Hope the property will be opened. Or the mapping function become a part of the library.
+    // https://issuetracker.google.com/issues/168309730
+    private fun <Key : Any, Value : Any> PagingState<Key, Value>.getLeadingPlaceholderCount(): Int {
+        return javaClass.getDeclaredField("leadingPlaceholderCount").let {
+            it.isAccessible = true
+            return@let it.getInt(this)
+        }
     }
 
     override val jumpingSupported: Boolean
