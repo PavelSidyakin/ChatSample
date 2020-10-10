@@ -38,4 +38,5 @@ interface ChatDbRepository {
 
     suspend fun deleteMessageListRemoteKey(chatId: Long)
 
+    suspend fun deleteMessageWithTemporaryId(chatId: Long, temporaryId: Long)
 }

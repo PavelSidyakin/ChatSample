@@ -16,17 +16,7 @@ import androidx.room.Update
 // ------------------------- Entities ---------------------------------
 @Entity(
     tableName = "messages",
-    primaryKeys = ["f_chat_id", "f_message_id"],
-//    foreignKeys = [
-//        ForeignKey(
-//            entity = DbUserItem::class,
-//            parentColumns = ["f_user_id"],
-//            childColumns = ["f_message_sender_id"],
-//            onDelete = CASCADE,
-//            onUpdate = NO_ACTION,
-//            deferred = true
-//        )
-//    ]
+    primaryKeys = ["f_chat_id", "f_message_id", "f_message_tmp_id"],
 )
 data class DbMessageItemTable(
     @ColumnInfo(name = "f_chat_id")
@@ -45,7 +35,10 @@ data class DbMessageItemTable(
     val messageStatus: Int,
 
     @ColumnInfo(name = "f_message_type")
-    val messageType: Int
+    val messageType: Int,
+
+    @ColumnInfo(name = "f_message_tmp_id")
+    val messageTemporaryId: Long, // Used for an outgoing message
 )
 
 @Entity(tableName = "message_list_remote_key")
@@ -55,18 +48,11 @@ data class DbMessageSubListRemoteKeyTable(
     val chatId: Long,
 
     @ColumnInfo(name = "f_next_message_token")
-    val nextMessageToken: String
+    val nextMessageToken: String,
 )
 // ------------------------- Queries ---------------------------------
 
-//@Entity(tableName = "messages_query",
-//    primaryKeys = ["f_message_id"],
-//    foreignKeys = [
-//        ForeignKey(entity = DbMessageItemTable::class, parentColumns = ["f_message_id"], childColumns = ["f_message_id"]),
-//        ForeignKey(entity = DbUserItem::class, parentColumns = ["f_user_id"], childColumns = ["f_message_sender_id"])
-//    ]
-//)
-@Entity(primaryKeys = ["f_chat_id", "f_message_id"])
+@Entity(primaryKeys = ["f_chat_id", "f_message_id", "f_message_tmp_id"])
 data class DbMessageWithUserItemQuery(
     @ColumnInfo(name = "f_chat_id")
     val chatId: Long,
@@ -87,7 +73,10 @@ data class DbMessageWithUserItemQuery(
     val messageStatus: Int,
 
     @ColumnInfo(name = "f_message_type")
-    val messageType: Int
+    val messageType: Int,
+
+    @ColumnInfo(name = "f_message_tmp_id")
+    val messageTemporaryId: Long, // Used for an outgoing message
 )
 
 // ------------------------- Dao ---------------------------------
@@ -109,9 +98,10 @@ interface MessageListDao {
                     messages.f_message_id as f_message_id,
                     messages.f_message_text as f_message_text,
                     messages.f_message_sender_id as f_message_sender_id,
-                    users.f_user_name as f_message_sender_name,
+                    CASE WHEN users.f_user_name IS NULL THEN "" ELSE users.f_user_name END as f_message_sender_name,
                     messages.f_message_status as f_message_status,
-                    messages.f_message_type as f_message_type
+                    messages.f_message_type as f_message_type,
+                    messages.f_message_tmp_id as f_message_tmp_id
                 FROM messages
                     LEFT JOIN users ON f_message_sender_id == users.f_user_id
                 WHERE 
@@ -126,6 +116,9 @@ interface MessageListDao {
 
     @Query("SELECT * FROM messages WHERE :chatId == messages.f_chat_id")
     suspend fun selectAllMessagesList(chatId: Long): List<DbMessageItemTable>
+
+    @Query("DELETE FROM messages WHERE :chatId == messages.f_chat_id AND f_message_tmp_id == :temporaryId")
+    suspend fun deleteMessageWithTemporaryId(chatId: Long, temporaryId: Long)
 }
 
 @Dao

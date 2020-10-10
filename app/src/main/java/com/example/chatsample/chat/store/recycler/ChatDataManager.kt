@@ -5,6 +5,8 @@ import com.example.chatsample.chat.model.MessageInfo
 import com.example.chatsample.model.ChatInfo
 import kotlinx.coroutines.flow.Flow
 
-interface ChatDataSource {
+interface ChatDataManager {
     fun observeMessageList(chatId: Long): Flow<PagingData<MessageInfo>>
+
+    suspend fun sendMessage(chatId: Long, message: String)
 }

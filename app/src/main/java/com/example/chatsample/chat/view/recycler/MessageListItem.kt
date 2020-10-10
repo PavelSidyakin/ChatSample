@@ -13,6 +13,7 @@ sealed class MessageListItem {
             override val messageId: Long,
             val text: String,
             val status: MessageStatus,
+            val temporaryId: Long,
         ): Message(chatId, messageId)
 
         data class IncomingMessage(

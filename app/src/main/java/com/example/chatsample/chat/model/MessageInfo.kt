@@ -6,17 +6,14 @@ sealed class MessageInfo(
     open val chatId: Long,
     open val messageId: Long,
     open val messageText: String,
-    open val messageSenderId: Int,
-    open val messageSenderName: String,
 ) {
     data class OutgoingMessage(
         override val chatId: Long,
         override val messageId: Long,
         override val messageText: String,
-        override val messageSenderId: Int,
-        override val messageSenderName: String,
         val messageStatus: MessageStatus,
-    ) : MessageInfo(chatId, messageId, messageText, messageSenderId, messageSenderName) {
+        val messageTemporaryId: Long,
+    ) : MessageInfo(chatId, messageId, messageText) {
         companion object { const val MESSAGE_TYPE_ID = 1 }
     }
 
@@ -24,9 +21,9 @@ sealed class MessageInfo(
         override val chatId: Long,
         override val messageId: Long,
         override val messageText: String,
-        override val messageSenderId: Int,
-        override val messageSenderName: String,
-    ) : MessageInfo(chatId, messageId, messageText, messageSenderId, messageSenderName) {
+        val messageSenderId: Int,
+        val messageSenderName: String,
+    ) : MessageInfo(chatId, messageId, messageText) {
         companion object { const val MESSAGE_TYPE_ID = 2 }
     }
 }

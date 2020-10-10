@@ -1,6 +1,7 @@
 package com.example.chatsample.chat.view
 
 import android.view.View
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,8 +15,12 @@ import com.example.chatsample.chat.view.recycler.MessagesLoadStateAdapter
 import com.example.chatsample.chat.view.recycler.MessageListItem
 import com.example.chatsample.chat.view.recycler.MessagesAdapter
 import com.example.chatsample.chat.view.recycler.MessagesDelegationAdapter
+import com.example.chatsample.utils.SimpleTextWatcher
 import com.example.chatsample.utils.diffPagingData
+import com.example.chatsample.utils.setTextCompat
+import kotlinx.android.synthetic.main.chat_frament.view.chat_message_edit_text
 import kotlinx.android.synthetic.main.chat_frament.view.chat_message_list
+import kotlinx.android.synthetic.main.chat_frament.view.chat_send_button
 
 class ChatViewImpl(
     private val rootView: View,
@@ -30,9 +35,16 @@ class ChatViewImpl(
 
     private val messagesAdapter = MessagesAdapter(messagesClickListeners)
 
+    private val textWatcher =
+        object : SimpleTextWatcher() {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                dispatch(ChatStore.Intent.OutgoingMessageText(s.toString()))
+            }
+        }
+
     init {
         with(rootView) {
-            rootView.chat_message_list.adapter = messagesAdapter
+            chat_message_list.adapter = messagesAdapter
                 .withLoadStateHeaderAndFooter(
                     MessagesLoadStateAdapter(
                         retry = {
@@ -44,6 +56,12 @@ class ChatViewImpl(
                             dispatch(ChatStore.Intent.Retry())
                         }
                     ))
+
+            chat_send_button.setOnClickListener {
+                dispatch(ChatStore.Intent.SendMessage())
+            }
+
+            chat_message_edit_text.addTextChangedListener(textWatcher)
         }
 
         messagesAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
@@ -54,7 +72,6 @@ class ChatViewImpl(
                 }
             }
         })
-
     }
 
     override val renderer: ViewRenderer<ChatStore.State> = diff {
@@ -66,6 +83,9 @@ class ChatViewImpl(
             if (retrying) {
                 messagesAdapter.retry()
             }
+        })
+        diff(get = ChatStore.State::currentlyEditingMessage, set = { currentlyEditingMessage ->
+            rootView.chat_message_edit_text.setTextCompat(currentlyEditingMessage, textWatcher)
         })
     }
 

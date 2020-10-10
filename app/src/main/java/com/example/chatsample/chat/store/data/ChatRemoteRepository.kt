@@ -1,5 +1,6 @@
 package com.example.chatsample.chat.store.data
 
+import com.example.chatsample.chat.model.MessageInfo
 import com.example.chatsample.chat.model.NextMessageListInfo
 import com.example.chatsample.chat.model.RequestMessageListResult
 import com.example.chatsample.chat.model.UpdateMessageListEvent
@@ -14,5 +15,5 @@ interface ChatRemoteRepository {
 
     suspend fun requestMessageList(chatId: Long, nextInfo: NextMessageListInfo?, limit: Int): RequestMessageListResult
     fun subscribeMessageListUpdates(chatId: Long): Flow<UpdateMessageListEvent>
-
+    suspend fun sendMessage(chatId: Long, message: String): MessageInfo.OutgoingMessage
 }

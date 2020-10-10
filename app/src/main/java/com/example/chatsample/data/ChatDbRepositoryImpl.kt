@@ -1,6 +1,5 @@
 package com.example.chatsample.data
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.room.withTransaction
 import com.example.chatsample.chat.model.MessageInfo
@@ -17,7 +16,6 @@ import com.example.chatsample.model.ChatInfo
 import com.example.chatsample.model.ChatType
 import com.example.chatsample.utils.mapValue
 import javax.inject.Inject
-import kotlin.IllegalStateException
 
 class ChatDbRepositoryImpl @Inject constructor(
     private val chatDb: ChatDb
@@ -77,34 +75,40 @@ class ChatDbRepositoryImpl @Inject constructor(
 
     override suspend fun insertAllMessages(chatId: Long, messages: List<MessageInfo>) {
         withTransaction {
-            val existingMessages = messagesDao.selectAllMessagesList(chatId)
-            commonDao.insertUsers(messages.map {
-                DbUserItem(
-                    it.messageSenderId,
-                    it.messageSenderName
-                )
+            commonDao.insertUsers(messages.mapNotNull { messageInfo ->
+                if (messageInfo is MessageInfo.IncomingMessage) {
+                    DbUserItem(
+                        messageInfo.messageSenderId,
+                        messageInfo.messageSenderName
+                    )
+                } else {
+                    null
+                }
             })
-            val existingMessages1 = messagesDao.selectAllMessagesList(chatId)
             messagesDao.insertAllMessages(messages.map { it.toDbMessageItemTable() })
-            val existingMessages2 = messagesDao.selectAllMessagesList(chatId)
-            Log.i("Messages", "$existingMessages2")
         }
     }
 
     override suspend fun insertMessage(chatId: Long, message: MessageInfo) {
         withTransaction {
-            commonDao.insertUser(message.let {
-                DbUserItem(
-                    it.messageSenderId,
-                    it.messageSenderName
+            if (message is MessageInfo.IncomingMessage) {
+                commonDao.insertUser(
+                    DbUserItem(
+                        message.messageSenderId,
+                        message.messageSenderName,
+                    )
                 )
-            })
+            }
             messagesDao.insertMessage(message.toDbMessageItemTable())
         }
     }
 
     override suspend fun deleteAllMessages(chatId: Long) {
         messagesDao.deleteAllMessages(chatId)
+    }
+
+    override suspend fun deleteMessageWithTemporaryId(chatId: Long, temporaryId: Long) {
+        messagesDao.deleteMessageWithTemporaryId(chatId, temporaryId)
     }
 
     override suspend fun setMessageListNextRemoteKey(chatId: Long, key: String) {
@@ -125,9 +129,8 @@ class ChatDbRepositoryImpl @Inject constructor(
                 chatId,
                 messageId,
                 messageText,
-                messageSenderId,
-                messageSenderName,
-                MessageStatus.byIntValue(messageStatus)
+                MessageStatus.byIntValue(messageStatus),
+                messageTemporaryId,
             )
             MessageInfo.IncomingMessage.MESSAGE_TYPE_ID -> MessageInfo.IncomingMessage(
                 chatId, messageId, messageText, messageSenderId, messageSenderName
@@ -142,10 +145,11 @@ class ChatDbRepositoryImpl @Inject constructor(
                 chatId,
                 messageId,
                 messageText,
-                messageSenderId,
-                messageSenderName,
+                0,
+                "",
                 messageStatus.intValue,
-                MessageInfo.OutgoingMessage.MESSAGE_TYPE_ID
+                MessageInfo.OutgoingMessage.MESSAGE_TYPE_ID,
+                messageTemporaryId,
             )
             is MessageInfo.IncomingMessage -> DbMessageWithUserItemQuery(
                 chatId,
@@ -154,7 +158,8 @@ class ChatDbRepositoryImpl @Inject constructor(
                 messageSenderId,
                 messageSenderName,
                 0,
-                MessageInfo.IncomingMessage.MESSAGE_TYPE_ID
+                MessageInfo.IncomingMessage.MESSAGE_TYPE_ID,
+                0,
             )
         }
     }
@@ -165,9 +170,10 @@ class ChatDbRepositoryImpl @Inject constructor(
                 chatId,
                 messageId,
                 messageText,
-                messageSenderId,
+                0,
                 messageStatus.intValue,
-                MessageInfo.OutgoingMessage.MESSAGE_TYPE_ID
+                MessageInfo.OutgoingMessage.MESSAGE_TYPE_ID,
+                messageTemporaryId,
             )
             is MessageInfo.IncomingMessage -> DbMessageItemTable(
                 chatId,
@@ -175,7 +181,8 @@ class ChatDbRepositoryImpl @Inject constructor(
                 messageText,
                 messageSenderId,
                 0,
-                MessageInfo.IncomingMessage.MESSAGE_TYPE_ID
+                MessageInfo.IncomingMessage.MESSAGE_TYPE_ID,
+                0,
             )
         }
     }

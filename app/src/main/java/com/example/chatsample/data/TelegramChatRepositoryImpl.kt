@@ -17,6 +17,11 @@ import com.example.chatsample.model.ChatType
 import com.example.chatsample.model.NextChatListInfo
 import com.example.chatsample.model.RequestChatListResult
 import com.example.chatsample.model.UpdateChatListEvent
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
@@ -24,11 +29,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import org.drinkless.td.libcore.telegram.Client
 import org.drinkless.td.libcore.telegram.TdApi
 import org.drinkless.td.libcore.telegram.TdApi.ConnectionStateReady
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
+import org.drinkless.td.libcore.telegram.TdApi.InputMessageText
 
 @Singleton
 class TelegramChatRepositoryImpl @Inject constructor(
@@ -243,6 +244,24 @@ class TelegramChatRepositoryImpl @Inject constructor(
         throw RuntimeException("requestInitialChatList() failed")
     }
 
+    override suspend fun sendMessage(chatId: Long, message: String): MessageInfo.OutgoingMessage {
+        val sendMessageResult = sendTdApiRequest(
+            TdApi.SendMessage(
+                chatId,
+                0,
+                TdApi.SendMessageOptions(false, false, null),
+                null,
+                InputMessageText(TdApi.FormattedText(message, arrayOf()), true, false)
+            )
+        )
+
+        if (sendMessageResult is TdApi.Message) {
+            return convertTdApiMessage2MessageInfo(sendMessageResult) as MessageInfo.OutgoingMessage
+        }
+
+        throw RuntimeException("Failed to send message to chatId=$chatId")
+    }
+
     override suspend fun requestMessageList(
         chatId: Long,
         nextInfo: NextMessageListInfo?,
@@ -299,8 +318,7 @@ class TelegramChatRepositoryImpl @Inject constructor(
                 messageId = message.id,
                 messageText = messageText,
                 messageStatus = MessageStatus.DELIVERED,
-                messageSenderId = message.senderUserId,
-                messageSenderName = userName
+                0
             )
         } else {
             MessageInfo.IncomingMessage(
@@ -355,6 +373,8 @@ class TelegramChatRepositoryImpl @Inject constructor(
                 }
             }
     }
+
+
 
     companion object {
         private const val TAG = "TelegramChatRepository"

@@ -29,6 +29,11 @@ interface MessagesClickListeners {
 class MessageDiffUtilItemCallback : DiffUtil.ItemCallback<MessageListItem>() {
 
     override fun areItemsTheSame(oldItem: MessageListItem, newItem: MessageListItem): Boolean {
+        if (oldItem is MessageListItem.Message.OutgoingMessage && newItem is MessageListItem.Message.OutgoingMessage) {
+            return oldItem.chatId == newItem.chatId
+                    && oldItem.messageId == newItem.messageId
+                    && oldItem.temporaryId == newItem.temporaryId
+        }
         if (oldItem is MessageListItem.Message && newItem is MessageListItem.Message) {
             return oldItem.chatId == newItem.chatId
                     && oldItem.messageId == newItem.messageId

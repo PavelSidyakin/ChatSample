@@ -13,9 +13,9 @@ import com.example.chatsample.chat.store.ChatStoreFactory
 import com.example.chatsample.chat.store.ChatStoreFactoryImpl
 import com.example.chatsample.chat.store.data.ChatDbRepository
 import com.example.chatsample.chat.store.data.ChatRemoteRepository
-import com.example.chatsample.chat.store.recycler.ChatDataSource
+import com.example.chatsample.chat.store.recycler.ChatDataManager
 import com.example.chatsample.data.database.ChatDb
-import com.example.chatsample.chat.store.recycler.ChatDataSourceImpl
+import com.example.chatsample.chat.store.recycler.ChatDataManagerImpl
 import com.example.chatsample.chatlist.store.ChatListIntentExecutor
 import com.example.chatsample.chatlist.store.ChatListIntentExecutorImpl
 import com.example.chatsample.chatlist.store.ChatListStoreFactory
@@ -88,7 +88,7 @@ interface AppModule {
 
     @Singleton
     @Binds
-    fun provideChatDataSource(chatRepository: ChatDataSourceImpl): ChatDataSource
+    fun provideChatDataSource(chatRepository: ChatDataManagerImpl): ChatDataManager
 
     companion object {
         @Singleton

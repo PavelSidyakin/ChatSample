@@ -9,9 +9,12 @@ interface ChatStore : Store<ChatStore.Intent, ChatStore.State, ChatStore.Label> 
     sealed class Intent {
         class Refresh: Intent()
         class Retry: Intent()
+        class SendMessage: Intent()
+        data class OutgoingMessageText(val message: String): Intent()
     }
 
     data class State(
+        val currentlyEditingMessage: String = "",
         val isLoading: Boolean = false,
         val isRefreshing: Boolean = false,
         val isRetrying: Boolean = false,
