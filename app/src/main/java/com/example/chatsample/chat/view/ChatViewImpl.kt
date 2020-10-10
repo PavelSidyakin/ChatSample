@@ -3,6 +3,8 @@ package com.example.chatsample.chat.view
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.paging.PagingData
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.arkivanov.mvikotlin.core.utils.diff
 import com.arkivanov.mvikotlin.core.view.BaseMviView
 import com.arkivanov.mvikotlin.core.view.ViewRenderer
@@ -43,6 +45,16 @@ class ChatViewImpl(
                         }
                     ))
         }
+
+        messagesAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == 0 && itemCount == 1) { // One new message was added.
+                    rootView.chat_message_list.scrollToPosition(0)
+                }
+            }
+        })
+
     }
 
     override val renderer: ViewRenderer<ChatStore.State> = diff {

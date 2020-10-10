@@ -42,7 +42,5 @@ sealed class RequestMessageListResult {
     ) : RequestMessageListResult()
 }
 
-data class UpdateMessageListEvent(
-    val messageInfo: MessageInfo
-)
+class UpdateMessageListEvent
 

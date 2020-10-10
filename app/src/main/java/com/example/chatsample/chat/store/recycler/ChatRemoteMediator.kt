@@ -36,9 +36,6 @@ class ChatRemoteMediator(
         async(monitorJob) {
             chatRemoteRepository.subscribeMessageListUpdates(chatId)
                 .collectLatest { updateMessageListEvent: UpdateMessageListEvent ->
-                    // To refresh the list immediately
-                    chatDbRepository.insertMessage(chatId, updateMessageListEvent.messageInfo)
-
                     // Next page tokens will be invalid. Refresh the list
                     updateFromNetwork(LoadType.REFRESH, null)
                 }

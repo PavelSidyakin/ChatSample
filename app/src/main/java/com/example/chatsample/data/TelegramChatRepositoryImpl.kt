@@ -348,10 +348,10 @@ class TelegramChatRepositoryImpl @Inject constructor(
         return updatesChannel
             .receiveAsFlow()
             .mapNotNull { tdApiObject ->
-                if (tdApiObject is TdApi.UpdateNewMessage && tdApiObject.message.chatId == chatId) {
-                    UpdateMessageListEvent(convertTdApiMessage2MessageInfo(tdApiObject.message))
-                } else {
-                    null
+                when {
+                    (tdApiObject is TdApi.UpdateChatLastMessage && tdApiObject.chatId == chatId) -> UpdateMessageListEvent()
+                    (tdApiObject is TdApi.UpdateDeleteMessages && tdApiObject.chatId == chatId) -> UpdateMessageListEvent()
+                    else -> null
                 }
             }
     }
