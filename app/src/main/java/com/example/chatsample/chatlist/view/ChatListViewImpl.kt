@@ -9,6 +9,7 @@ import com.arkivanov.mvikotlin.core.utils.diff
 import com.arkivanov.mvikotlin.core.view.BaseMviView
 import com.arkivanov.mvikotlin.core.view.ViewRenderer
 import com.example.chatsample.chatlist.store.ChatListStore
+import com.example.chatsample.chatlist.view.recycler.ChatListAdapter
 import com.example.chatsample.chatlist.view.recycler.ChatListClickListeners
 import com.example.chatsample.chatlist.view.recycler.ChatListDelegationAdapter
 import com.example.chatsample.chatlist.view.recycler.ChatListItem
@@ -32,7 +33,7 @@ class ChatListViewImpl(
         }
     }
 
-    private val chatListAdapter = ChatListDelegationAdapter(chatListClickListeners)
+    private val chatListAdapter = ChatListAdapter(chatListClickListeners)
 
     init {
         with(rootView) {

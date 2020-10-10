@@ -10,6 +10,7 @@ import com.example.chatsample.chat.store.ChatStore
 import com.example.chatsample.chat.view.recycler.MessagesClickListeners
 import com.example.chatsample.chat.view.recycler.MessagesLoadStateAdapter
 import com.example.chatsample.chat.view.recycler.MessageListItem
+import com.example.chatsample.chat.view.recycler.MessagesAdapter
 import com.example.chatsample.chat.view.recycler.MessagesDelegationAdapter
 import com.example.chatsample.utils.diffPagingData
 import kotlinx.android.synthetic.main.chat_frament.view.chat_message_list
@@ -25,7 +26,7 @@ class ChatViewImpl(
         }
     }
 
-    private val messagesAdapter = MessagesDelegationAdapter(messagesClickListeners)
+    private val messagesAdapter = MessagesAdapter(messagesClickListeners)
 
     init {
         with(rootView) {
