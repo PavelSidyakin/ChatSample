@@ -6,4 +6,4 @@ The app demonstrates using MVI architecture for a chat application.
 
 
 
-Used technologies/libraries: MVIKotlin, Paging Library 3, Room, Adapter Delegates.
+Used technologies/libraries: MVIKotlin, Coroutines, Paging Library 3, Room, Dagger 2.
